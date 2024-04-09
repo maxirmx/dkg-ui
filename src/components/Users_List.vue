@@ -24,7 +24,6 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-import { computed } from 'vue'
 import router from '@/router'
 
 import { storeToRefs } from 'pinia'
@@ -38,11 +37,6 @@ const authStore = useAuthStore()
 const usersStore = useUsersStore()
 const { users } = storeToRefs(usersStore)
 usersStore.getAll()
-
-import { useProfilesStore } from '@/stores/profiles.store.js'
-const profilesStore = useProfilesStore()
-const { profiles } = storeToRefs(profilesStore)
-profilesStore.getAll()
 
 import { useAlertStore } from '@/stores/alert.store.js'
 const alertStore = useAlertStore()
@@ -61,7 +55,7 @@ function getCredentials(item) {
   if (item) {
     crd = ''
     if (item.isAdmin) {
-      crd = 'Администратор'
+      crd = 'Admin'
     }
   }
   return crd
@@ -78,15 +72,9 @@ function filterUsers(value, query, item) {
   const q = query.toLocaleUpperCase()
 
   if (
-    i.lastName.toLocaleUpperCase().indexOf(q) !== -1 ||
-    i.firstName.toLocaleUpperCase().indexOf(q) !== -1 ||
-    i.patronimic.toLocaleUpperCase().indexOf(q) !== -1 ||
+    i.lastname.toLocaleUpperCase().indexOf(q) !== -1 ||
     i.email.toLocaleUpperCase().indexOf(q) !== -1
   ) {
-    return true
-  }
-  const profile = getProfile(i)
-  if (profile.toLocaleUpperCase().indexOf(q) !== -1) {
     return true
   }
 
@@ -97,26 +85,12 @@ function filterUsers(value, query, item) {
   return false
 }
 
-function getProfile(item) {
-  if (item.profileId == -1) {
-    return ''
-  }
-  let profile = computed(() => {
-    let profile = null
-    if (!profiles.value.loading) {
-      profile = profiles.value.find((o) => o.id === item.profileId)
-    }
-    return profile ? profile.name : 'загружается...'
-  })
-  return profile.value
-}
-
 async function deleteUser(item) {
-  const content = 'Удалить пользователя "' + item.firstName + ' ' + item.lastName + '" ?'
+  const content = 'Do you want to delete "' + item.name + '" ?'
   const result = await confirm({
-    title: 'Подтверждение',
-    confirmationText: 'Удалить',
-    cancellationText: 'Не удалять',
+    title: 'Confirmation',
+    confirmationText: 'Delete',
+    cancellationText: 'Do not delete',
     dialogProps: {
       width: '30%',
       minWidth: '250px'
@@ -142,7 +116,6 @@ async function deleteUser(item) {
 const headers = [
   { title: 'Пользователь', align: 'start', key: 'id' },
   { title: 'E-mail', align: 'start', key: 'email' },
-  { title: 'Профиль', align: 'start', key: 'profileId' },
   { title: 'Права', align: 'start', key: 'credentials', sortable: false },
   { title: '', align: 'center', key: 'actions0', sortable: false, width: '5%' },
   { title: '', align: 'center', key: 'actions1', sortable: false, width: '5%' },
@@ -169,7 +142,7 @@ const headers = [
       <v-data-table
         v-if="users?.length"
         v-model:items-per-page="authStore.users_per_page"
-        items-per-page-text="Пользователей на странице"
+        items-per-page-text="Users per page"
         :items-per-page-options="itemsPerPageOptions"
         page-text="{0}-{1} из {2}"
         v-model:page="authStore.users_page"
@@ -182,11 +155,7 @@ const headers = [
         class="elevation-1"
       >
         <template v-slot:[`item.id`]="{ item }">
-          {{ item['lastName'] }} {{ item['firstName'] }} {{ item['patronimic'] }}
-        </template>
-
-        <template v-slot:[`item.profileId`]="{ item }">
-          {{ getProfile(item) }}
+          {{ item['name'] }}
         </template>
 
         <template v-slot:[`item.credentials`]="{ item }">

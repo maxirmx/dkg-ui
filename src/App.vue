@@ -44,11 +44,7 @@ function deauth() {
 function getUserName() {
   return authStore.user
     ? ' | ' +
-        authStore.user.lastName +
-        ' ' +
-        authStore.user.firstName +
-        ' ' +
-        authStore.user.patronimic
+        authStore.user.name
     : ''
 }
 

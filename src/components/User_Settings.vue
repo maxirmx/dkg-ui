@@ -31,7 +31,6 @@ import { storeToRefs } from 'pinia'
 import { Form, Field } from 'vee-validate'
 import * as Yup from 'yup'
 import { useUsersStore } from '@/stores/users.store.js'
-import { useProfilesStore } from '@/stores/profiles.store.js'
 import { useAuthStore } from '@/stores/auth.store.js'
 import { useAlertStore } from '@/stores/alert.store.js'
 
@@ -50,47 +49,30 @@ const usersStore = useUsersStore()
 const authStore = useAuthStore()
 
 const pwdErr =
-  'Пароль должен быть не короче 8 символов и содержать хотя бы одну цифру и один специальный символ (!@#$%^&*()\\-_=+{};:,<.>)'
+  'The password shall be at least 8 charcters and contain at least one digit and one special character  (!@#$%^&*()\\-_=+{};:,<.>)'
 const pwdReg = /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})((?=.*\d){1}).*$/
-const profileErr = 'Необходимо указать организацию'
 
 const schema = Yup.object().shape({
-  firstName: Yup.string().required('Необходимо указать имя'),
-  lastName: Yup.string().required('Необходимо указать фамилию'),
+  name: Yup.string().required('Please enter a (nick)name'),
   email: Yup.string()
-    .required('Необходимо указать электронную почту')
-    .email('Неверный формат электронной почты'),
-  profileId: Yup.number().concat(
-    asAdmin() ? Yup.number().typeError(profileErr).required(profileErr).min(0, profileErr) : null
-  ),
+    .required('Please enter an email address')
+    .email('Wrong email format'),
   password: Yup.string().concat(
-    isRegister() ? Yup.string().required('Необходимо указать пароль').matches(pwdReg, pwdErr) : null
+    isRegister() ? Yup.string().required('Please enter a password').matches(pwdReg, pwdErr) : null
   ),
   password2: Yup.string()
     .when('password', (password, schema) => {
       if ((password && password != '') || isRegister())
-        return schema.required('Необходимо подтвердить пароль').matches(pwdReg, pwdErr)
+        return schema.required('Please confirm password').matches(pwdReg, pwdErr)
     })
-    .oneOf([Yup.ref('password')], 'Пароли должны совпадать')
+    .oneOf([Yup.ref('password')], 'Passwords shall match')
 })
-
-const profilesStore = useProfilesStore()
-const profiles = storeToRefs(profilesStore).profiles
-const profile = storeToRefs(profilesStore).profile
-
-if (asAdmin()) {
-  profilesStore.getAll()
-} else {
-  if (authStore.user) {
-    profilesStore.getById(authStore.user.profileId)
-  }
-}
 
 const showPassword = ref(false)
 const showPassword2 = ref(false)
 
 let user = ref({
-  profileId: 1
+
 })
 
 if (!isRegister()) {
@@ -107,11 +89,11 @@ function asAdmin() {
 }
 
 function getTitle() {
-  return isRegister() ? (asAdmin() ? 'Регистрация пользователя' : 'Регистрация') : 'Настройки'
+  return isRegister() ? (asAdmin() ? 'Create new user' : 'Self registration') : 'Settings'
 }
 
 function getButton() {
-  return isRegister() ? 'Зарегистрировать' + (asAdmin() ? '' : 'ся') : 'Сохранить'
+  return isRegister() ? (asAdmin() ? 'Create' : 'Register') : 'Save'
 }
 
 function showCredentials() {
@@ -127,7 +109,7 @@ function getCredentials() {
   if (user.value) {
     crd = ''
     if (user.value.isAdmin === 'ADMIN') {
-      crd = 'Aдминистратор'
+      crd = 'Admin'
     }
   }
   return crd
@@ -152,12 +134,11 @@ function onSubmit(values, { setErrors }) {
           router.push('/').then(() => {
             const alertStore = useAlertStore()
             alertStore.success(
-              'На Ваш адрес электронной почты отправлено письмо с подтверждением. ' +
-                'Пожалуйста, перейдите по ссылке для завершения регистрации. ' +
-                'Обратите внимание, что ссылка одноразовая и действует 4 часа. ' +
-                'Если Вы не можете найти письма, проверьте папку с нежелательной почтой (спамом). ' +
-                'Если письмо не пришло, обратитесь к администратору.'
-            )
+              'A confirmation email has been sent to your email address. ' +
+              'Please follow the link to complete the registration. ' +
+              'Please note that the link is one-time and valid for 4 hours. ' +
+              'If you can\'t find the email, check your junk mail (spam) folder. ' +
+              'If the email didn\'t arrive, please contact the administrator.')
           })
         })
         .catch((error) => setErrors({ apiError: error }))
@@ -188,36 +169,14 @@ function onSubmit(values, { setErrors }) {
       v-slot="{ errors, isSubmitting }"
     >
       <div class="form-group">
-        <label for="lastName" class="label">Фамилия:</label>
+        <label for="name" class="label">Имя:</label>
         <Field
-          name="lastName"
-          id="lastName"
+          name="name"
+          id="name"
           type="text"
           class="form-control input"
-          :class="{ 'is-invalid': errors.lastName }"
-          placeholder="Фамилия"
-        />
-      </div>
-      <div class="form-group">
-        <label for="firstName" class="label">Имя:</label>
-        <Field
-          name="firstName"
-          id="firstName"
-          type="text"
-          class="form-control input"
-          :class="{ 'is-invalid': errors.firstName }"
+          :class="{ 'is-invalid': errors.name }"
           placeholder="Имя"
-        />
-      </div>
-      <div class="form-group">
-        <label for="patronimic" class="label">Отчество:</label>
-        <Field
-          name="patronimic"
-          id="patronimic"
-          type="text"
-          class="form-control input"
-          :class="{ 'is-invalid': errors.patronimic }"
-          placeholder="Отчество"
         />
       </div>
       <div class="form-group">
@@ -303,26 +262,6 @@ function onSubmit(values, { setErrors }) {
         </button>
       </div>
       <div v-if="showCredentials()" class="form-group">
-        <label for="profileId" class="label">Профиль:</label>
-        <span id="profileId"
-          ><em>{{ profile?.name }}</em></span
-        >
-      </div>
-      <div v-if="showAndEditCredentials()" class="form-group">
-        <label for="profileId" class="label">Профиль:</label>
-        <Field
-          name="profileId"
-          as="select"
-          class="form-control input select"
-          :class="{ 'is-invalid': errors.profileId }"
-        >
-          <option value="">Выберите профиль:</option>
-          <option v-for="profile in profiles" :key="profile" :value="profile.id">
-            {{ profile.name }}
-          </option>
-        </Field>
-      </div>
-      <div v-if="showCredentials()" class="form-group">
         <label for="crd" class="label">Права:</label>
         <span id="crd"
           ><em>{{ getCredentials() }}</em></span
@@ -358,15 +297,10 @@ function onSubmit(values, { setErrors }) {
           Отменить
         </button>
       </div>
-      <div v-if="errors.lastName" class="alert alert-danger mt-3 mb-0">{{ errors.lastName }}</div>
-      <div v-if="errors.firstName" class="alert alert-danger mt-3 mb-0">{{ errors.firstName }}</div>
-      <div v-if="errors.patronimic" class="alert alert-danger mt-3 mb-0">
-        {{ errors.patronimic }}
-      </div>
+      <div v-if="errors.name" class="alert alert-danger mt-3 mb-0">{{ errors.name }}</div>
       <div v-if="errors.email" class="alert alert-danger mt-3 mb-0">{{ errors.email }}</div>
       <div v-if="errors.password" class="alert alert-danger mt-3 mb-0">{{ errors.password }}</div>
       <div v-if="errors.password2" class="alert alert-danger mt-3 mb-0">{{ errors.password2 }}</div>
-      <div v-if="errors.profileId" class="alert alert-danger mt-3 mb-0">{{ errors.profileId }}</div>
       <div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{ errors.apiError }}</div>
     </Form>
   </div>
@@ -374,6 +308,6 @@ function onSubmit(values, { setErrors }) {
     <span class="spinner-border spinner-border-lg align-center"></span>
   </div>
   <div v-if="user?.error" class="text-center m-5">
-    <div class="text-danger">Ошибка при загрузке информации о пользователе: {{ user.error }}</div>
+    <div class="text-danger">Failed to load user data: {{ user.error }}</div>
   </div>
 </template>

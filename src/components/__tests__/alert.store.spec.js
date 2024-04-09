@@ -1,4 +1,4 @@
-// Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
+// Copyright (C) 2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
 // This file is a part of Dkg Frontend applcation
 //
@@ -23,22 +23,40 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-import { defineStore } from 'pinia'
+import { createPinia } from 'pinia'
+import { describe, it, expect, beforeEach, jest } from 'vitest'
+import { useAuthStore } from '@/stores/auth.store.js'
+import { fetchWrapper } from '@/helpers/fetch.wrapper.js'
 
-export const useAlertStore = defineStore({
-  id: 'alert',
-  state: () => ({
-    alert: null
-  }),
-  actions: {
-    success(message) {
-      this.alert = { message, type: 'alert-success' }
-    },
-    error(message) {
-      this.alert = { message, type: 'alert-danger' }
-    },
-    clear() {
-      this.alert = null
-    }
-  }
+jest.mock('@/helpers/fetch.wrapper.js', () => ({
+    ...jest.requireActual('@/helpers/fetch.wrapper.js'),
+    get: jest.fn(),
+    post: jest.fn(),
+    put: jest.fn(),
+  }))
+
+
+describe('auth store', () => {
+  let store
+
+  beforeEach(() => {
+    const pinia = createPinia()
+    store = useAuthStore(pinia)
+    fetchWrapper.get.mockClear()
+    fetchWrapper.post.mockClear()
+    fetchWrapper.put.mockClear()
+  })
+
+  it('checks user authentication status', async () => {
+    await store.check()
+    expect(fetchWrapper.get).toHaveBeenCalledWith('/auth/check')
+  })
+
+  it('registers a new user', async () => {
+    const user = { email: 'test@example.com', password: 'password' }
+    await store.register(user)
+    expect(fetchWrapper.post).toHaveBeenCalledWith('/auth/register', user)
+  })
+
+  // Add more tests as needed for other methods in your auth store
 })
