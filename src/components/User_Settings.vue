@@ -1,5 +1,5 @@
 <script setup>
-// Copyright (C) 2023 Maxim [maxirmx] Samsonov (www.sw.consulting)
+// Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
 // This file is a part of Dkg Frontend applcation
 //
@@ -33,6 +33,7 @@ import * as Yup from 'yup'
 import { useUsersStore } from '@/stores/users.store.js'
 import { useAuthStore } from '@/stores/auth.store.js'
 import { useAlertStore } from '@/stores/alert.store.js'
+import { pwdErr, pwdReg} from '@/helpers/pwd.js'
 
 const props = defineProps({
   register: {
@@ -47,10 +48,6 @@ const props = defineProps({
 
 const usersStore = useUsersStore()
 const authStore = useAuthStore()
-
-const pwdErr =
-  'The password shall be at least 8 charcters and contain at least one digit and one special character  (!@#$%^&*()\\-_=+{};:,<.>)'
-const pwdReg = /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})((?=.*\d){1}).*$/
 
 const schema = Yup.object().shape({
   name: Yup.string().required('Please enter a (nick)name'),
@@ -72,7 +69,7 @@ const showPassword = ref(false)
 const showPassword2 = ref(false)
 
 let user = ref({
-
+  isEnabled: true,
 })
 
 if (!isRegister()) {
@@ -176,7 +173,7 @@ function onSubmit(values, { setErrors }) {
           type="text"
           class="form-control input"
           :class="{ 'is-invalid': errors.name }"
-          placeholder="Имя"
+          placeholder="(Nick)name"
         />
       </div>
       <div class="form-group">
@@ -188,11 +185,11 @@ function onSubmit(values, { setErrors }) {
           type="email"
           class="form-control input"
           :class="{ 'is-invalid': errors.email }"
-          placeholder="Адрес электронной почты"
+          placeholder="Email"
         />
       </div>
       <div class="form-group">
-        <label for="password" class="label">Пароль:</label>
+        <label for="password" class="label">Password:</label>
         <Field
           name="password"
           id="password"
@@ -200,7 +197,7 @@ function onSubmit(values, { setErrors }) {
           :type="showPassword ? 'text' : 'password'"
           class="form-control input password"
           :class="{ 'is-invalid': errors.password }"
-          placeholder="Пароль"
+          placeholder="password"
         />
         <button
           type="button"
@@ -227,14 +224,14 @@ function onSubmit(values, { setErrors }) {
         </button>
       </div>
       <div class="form-group">
-        <label for="password2" class="label">Пароль ещё раз:</label>
+        <label for="password2" class="label">Repeat password:</label>
         <Field
           name="password2"
           id="password2"
           :type="showPassword2 ? 'text' : 'password'"
           class="form-control input password"
           :class="{ 'is-invalid': errors.password2 }"
-          placeholder="Пароль"
+          placeholder="password"
         />
 
         <button

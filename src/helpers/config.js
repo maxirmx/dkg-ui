@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Maxim [maxirmx] Samsonov  (www.sw.consulting)
+// Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
 // This file is a part of Dkg Frontend applcation
 //

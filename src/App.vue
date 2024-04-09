@@ -1,5 +1,5 @@
 <script setup>
-// Copyright (C) 2023 Maxim [maxirmx] Samsonov (www.sw.consulting)
+// Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
 // This file is a part of Dkg Frontend applcation
 //
@@ -48,13 +48,6 @@ function getUserName() {
     : ''
 }
 
-/*<v-list-item>
-          <RouterLink to="/register" class="link">Регистрация</RouterLink>
-        </v-list-item>
-        <v-list-item>
-          <RouterLink to="/recover" class="link">Восстановление пароля</RouterLink>
-        </v-list-item>
-*/
 </script>
 
 <template>
@@ -74,10 +67,10 @@ function getUserName() {
       </template>
       <v-list v-if="authStore.user">
         <v-list-item v-if="!authStore.user.isAdmin">
-          <RouterLink :to="'/user/edit/' + authStore.user.id" class="link">Настройки</RouterLink>
+          <RouterLink :to="'/user/edit/' + authStore.user.id" class="link">Settings</RouterLink>
         </v-list-item>
         <v-list-item v-if="authStore.user.isAdmin">
-          <RouterLink to="/users" class="link">Пользователи</RouterLink>
+          <RouterLink to="/users" class="link">Users</RouterLink>
         </v-list-item>
         <v-list-item>
           <RouterLink to="/login" custom v-slot="{ href }">
@@ -87,12 +80,12 @@ function getUserName() {
       </v-list>
       <v-list v-if="!authStore.user">
         <v-list-item>
-          <RouterLink to="/login" class="link">Вход</RouterLink>
+          <RouterLink to="/login" class="link">Login</RouterLink>
         </v-list-item>
       </v-list>
       <template v-slot:append>
         <div class="pa-2">
-          <span class="orange version"> Версия {{ version }} </span>
+          <span class="orange version"> Version {{ version }} </span>
         </div>
       </template>
     </v-navigation-drawer>

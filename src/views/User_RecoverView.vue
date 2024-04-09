@@ -1,5 +1,5 @@
 <script setup>
-// Copyright (C) 2023 Maxim [maxirmx] Samsonov (www.sw.consulting)
+// Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
 // This file is a part of Dkg Frontend applcation
 //
@@ -32,8 +32,8 @@ import { useAlertStore } from '@/stores/alert.store.js'
 
 const schema = Yup.object().shape({
   email: Yup.string()
-    .required('Необходимо указать электронную почту')
-    .email('Неверный формат электронной почты')
+    .required('Please enter an email address')
+    .email('Wrong email format')
 })
 
 function onSubmit(values, { setErrors }) {
@@ -46,11 +46,10 @@ function onSubmit(values, { setErrors }) {
       router.push('/').then(() => {
         const alertStore = useAlertStore()
         alertStore.success(
-          'На Ваш адрес электронной почты отправлено письмо со ссылкой для восстановления пароля. ' +
-            'Обратите внимание, что ссылка одноразовая и действует 4 часа. ' +
-            'Если Вы не можете найти письма, проверьте папку с нежелательной почтой (спамом). ' +
-            'Если письмо не пришло, обратитесь к администратору.'
-        )
+          'A letter with a link to recover your password has been sent to your email address. ' +
+          'Please note that the link is one-time use and is valid for 4 hours. ' +
+          'If you cannot find the letter, check your junk mail (spam) folder. ' +
+          'If the letter did not arrive, please contact the administrator.'        )
       })
     })
     .catch((error) => setErrors({ apiError: error }))

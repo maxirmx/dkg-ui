@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Maxim [maxirmx] Samsonov  (www.sw.consulting)
+// Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
 // This file is a part of Dkg Frontend applcation
 //
@@ -47,28 +47,28 @@ const router = createRouter({
     },
     {
       path: '/login',
-      name: 'Вход',
+      name: 'Login',
       component: () => import('@/views/User_LoginView.vue')
     },
     {
       path: '/recover',
-      name: 'Восстановление пароля',
+      name: 'Recover password',
       component: () => import('@/views/User_RecoverView.vue'),
       props: true
     },
     {
       path: '/register',
-      name: 'Регистрация',
+      name: 'Registration',
       component: () => import('@/views/User_RegisterView.vue')
     },
     {
       path: '/users',
-      name: 'Пользователи',
+      name: 'Users',
       component: () => import('@/views/Users_View.vue')
     },
     {
       path: '/user/edit/:id',
-      name: 'Настройки',
+      name: 'Settings',
       component: () => import('@/views/User_EditView.vue'),
       props: true
     }
@@ -90,8 +90,8 @@ router.beforeEach(async (to) => {
         router.push('/login').then(() => {
           alert.error(
             auth.re_tgt === 'register'
-              ? 'Не удалось завершить регистрацию. '
-              : 'Не удалось восстановить пароль. ' + error
+              ? 'Failed to complete registration. '
+              : 'Failed to restore pwassword. ' + error
           )
         })
       })

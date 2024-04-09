@@ -1,4 +1,4 @@
-// Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
+// Copyright (C) 2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
 // This file is a part of Dkg Frontend applcation
 //
@@ -23,14 +23,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-import { ref } from 'vue'
+export const pwdErr =
+  'The password shall be at least 8 charcters and contain at least one digit and one special character  (!@#$%^&*()\\-_=+{};:,<.>)'
 
-export const drawer = ref(null)
-
-export function toggleDrawer() {
-  drawer.value = !drawer.value
-}
-
-export function hideDrawer() {
-  drawer.value = false
-}
+export const pwdReg = /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})((?=.*\d){1}).*$/

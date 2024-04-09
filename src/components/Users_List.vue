@@ -1,5 +1,5 @@
 <script setup>
-// Copyright (C) 2023 Maxim [maxirmx] Samsonov (www.sw.consulting)
+// Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
 // This file is a part of Dkg Frontend applcation
 //
@@ -114,9 +114,9 @@ async function deleteUser(item) {
 }
 
 const headers = [
-  { title: 'Пользователь', align: 'start', key: 'id' },
+  { title: 'User', align: 'start', key: 'id' },
   { title: 'E-mail', align: 'start', key: 'email' },
-  { title: 'Права', align: 'start', key: 'credentials', sortable: false },
+  { title: 'Credentials', align: 'start', key: 'credentials', sortable: false },
   { title: '', align: 'center', key: 'actions0', sortable: false, width: '5%' },
   { title: '', align: 'center', key: 'actions1', sortable: false, width: '5%' },
   { title: '', align: 'center', key: 'actions2', sortable: false, width: '5%' }
@@ -125,7 +125,7 @@ const headers = [
 
 <template>
   <div class="settings table-2">
-    <h1 class="orange">Пользователи</h1>
+    <h1 class="orange">Users</h1>
     <hr class="hr" />
 
     <div class="link-crt">
@@ -134,7 +134,7 @@ const headers = [
           size="1x"
           icon="fa-solid fa-user-plus"
           class="link"
-        />&nbsp;&nbsp;&nbsp;Зарегистрировать пользователя
+        />&nbsp;&nbsp;&nbsp;Create new user
       </router-link>
     </div>
 
@@ -173,12 +173,12 @@ const headers = [
           </button>
         </template>
       </v-data-table>
-      <div v-if="!users?.length" class="text-center m-5">Список пользователей пуст</div>
+      <div v-if="!users?.length" class="text-center m-5">No users</div>
       <div v-if="users?.length">
         <v-text-field
           v-model="authStore.users_search"
           :append-inner-icon="mdiMagnify"
-          label="Поиск по любой информации о пользователе"
+          label="Search any user information"
           variant="solo"
           hide-details
         />
@@ -188,7 +188,7 @@ const headers = [
       <span class="spinner-border spinner-border-lg align-center"></span>
     </div>
     <div v-if="users?.error" class="text-center m-5">
-      <div class="text-danger">Ошибка при загрузке списка пользователей: {{ users.error }}</div>
+      <div class="text-danger">Failed to load user list: {{ users.error }}</div>
     </div>
     <div v-if="alert" class="alert alert-dismissable mt-3 mb-0" :class="alert.type">
       <button @click="alertStore.clear()" class="btn btn-link close">×</button>

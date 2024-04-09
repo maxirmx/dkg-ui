@@ -1,5 +1,5 @@
 <script setup>
-// Copyright (C) 2023 Maxim [maxirmx] Samsonov (www.sw.consulting)
+// Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
 // This file is a part of Dkg Frontend applcation
 //
@@ -31,14 +31,15 @@ import { storeToRefs } from 'pinia'
 import router from '@/router'
 import { useAuthStore } from '@/stores/auth.store.js'
 import { useAlertStore } from '@/stores/alert.store.js'
+import { pwdErr, pwdReg} from '@/helpers/pwd.js'
 
 const schema = Yup.object().shape({
   login_email: Yup.string()
-    .required('Необходимо указать электронную почту')
-    .email('Неверный формат электронной почты'),
+    .required('Please enter an email address')
+    .email('Wrong email format'),
   login_password: Yup.string()
-    .required('Необходимо указать пароль')
-    .min(4, 'Пароль не может быть короче 4 симоволов')
+    .required('Please enter a password')
+    .matches(pwdReg, pwdErr)
 })
 
 const showPassword = ref(false)
@@ -70,18 +71,18 @@ function onSubmit(values, { setErrors }) {
           type="text"
           class="form-control input"
           :class="{ 'is-invalid': errors.login_email }"
-          placeholder="Адрес электронной почты"
+          placeholder="Email"
         />
       </div>
       <div class="form-group">
-        <label for="login_password" class="label">Пароль:</label>
+        <label for="login_password" class="label">Password:</label>
         <Field
           name="login_password"
           id="login_password"
           :type="showPassword ? 'text' : 'password'"
           class="form-control input password"
           :class="{ 'is-invalid': errors.login_password }"
-          placeholder="Пароль"
+          placeholder="password"
         />
         <button
           type="button"
