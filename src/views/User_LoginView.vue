@@ -31,15 +31,12 @@ import { storeToRefs } from 'pinia'
 import router from '@/router'
 import { useAuthStore } from '@/stores/auth.store.js'
 import { useAlertStore } from '@/stores/alert.store.js'
-import { pwdErr, pwdReg} from '@/helpers/pwd.js'
 
 const schema = Yup.object().shape({
   login_email: Yup.string()
-    .required('Please enter an email address')
-    .email('Wrong email format'),
+    .required('Please enter an email address'),
   login_password: Yup.string()
     .required('Please enter a password')
-    .matches(pwdReg, pwdErr)
 })
 
 const showPassword = ref(false)
@@ -64,7 +61,7 @@ function onSubmit(values, { setErrors }) {
     <hr class="hr" />
     <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
       <div class="form-group">
-        <label for="login_email" class="label">Адрес электронной почты:</label>
+        <label for="login_email" class="label">Email:</label>
         <Field
           name="login_email"
           id="login_email"

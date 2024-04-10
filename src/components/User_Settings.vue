@@ -166,18 +166,18 @@ function onSubmit(values, { setErrors }) {
       v-slot="{ errors, isSubmitting }"
     >
       <div class="form-group">
-        <label for="name" class="label">Имя:</label>
+        <label for="name" class="label">(Nick)name:</label>
         <Field
           name="name"
           id="name"
           type="text"
           class="form-control input"
           :class="{ 'is-invalid': errors.name }"
-          placeholder="(Nick)name"
+          placeholder="Name"
         />
       </div>
       <div class="form-group">
-        <label for="email" class="label">Адрес электронной почты:</label>
+        <label for="email" class="label">Email:</label>
         <Field
           name="email"
           id="email"

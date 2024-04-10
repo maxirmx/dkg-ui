@@ -24,8 +24,11 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+import { ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import router from '@/router'
+
+import { storeToRefs } from 'pinia'
 import { version } from '@/../package'
 
 import { useDisplay } from 'vuetify'
@@ -34,6 +37,12 @@ const { height } = useDisplay()
 import { useAuthStore } from '@/stores/auth.store.js'
 const authStore = useAuthStore()
 
+import { useVersionsStore } from '@/stores/versions.store.js'
+
+const versionsStore = useVersionsStore()
+const { currentVersion } = storeToRefs(versionsStore)
+versionsStore.getCurrent()
+console.log('dbVersion = ' + currentVersion.value)
 import { drawer, toggleDrawer } from '@/helpers/drawer.js'
 
 function deauth() {
@@ -66,6 +75,12 @@ function getUserName() {
         </div>
       </template>
       <v-list v-if="authStore.user">
+        <v-list-item>
+          <RouterLink to="/rounds" class="link">Rounds</RouterLink>
+        </v-list-item>
+        <v-list-item>
+          <RouterLink to="/nodes" class="link">Nodes</RouterLink>
+        </v-list-item>
         <v-list-item v-if="!authStore.user.isAdmin">
           <RouterLink :to="'/user/edit/' + authStore.user.id" class="link">Settings</RouterLink>
         </v-list-item>
@@ -74,7 +89,7 @@ function getUserName() {
         </v-list-item>
         <v-list-item>
           <RouterLink to="/login" custom v-slot="{ href }">
-            <a :href="href" @click="deauth()" class="link">Выход</a>
+            <a :href="href" @click="deauth()" class="link">Logout</a>
           </RouterLink>
         </v-list-item>
       </v-list>
@@ -82,10 +97,16 @@ function getUserName() {
         <v-list-item>
           <RouterLink to="/login" class="link">Login</RouterLink>
         </v-list-item>
+        <v-list-item>
+          <RouterLink to="/register" class="link">Register</RouterLink>
+        </v-list-item>
+        <v-list-item>
+          <RouterLink to="/recover" class="link">Recover password</RouterLink>
+        </v-list-item>
       </v-list>
       <template v-slot:append>
-        <div class="pa-2">
-          <span class="orange version"> Version {{ version }} </span>
+        <div class="pa-2 orange version">
+            Client {{ version }}<br/>Server {{ currentVersion.versionNumber }}
         </div>
       </template>
     </v-navigation-drawer>

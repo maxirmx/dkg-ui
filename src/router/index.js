@@ -71,7 +71,17 @@ const router = createRouter({
       name: 'Settings',
       component: () => import('@/views/User_EditView.vue'),
       props: true
-    }
+    },
+    {
+      path: '/nodes',
+      name: 'Nodes',
+      component: () => import('@/views/Nodes_View.vue')
+    },
+    {
+      path: '/rounds',
+      name: 'Rounds',
+      component: () => import('@/views/Rounds_View.vue')
+    },
   ]
 })
 
