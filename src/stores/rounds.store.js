@@ -1,6 +1,6 @@
 // Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
-// This file is a part of Dkg Frontend applcation
+// This file is a part of b-tracker applcation
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions
@@ -26,61 +26,38 @@
 import { defineStore } from 'pinia'
 import { fetchWrapper } from '@/helpers/fetch.wrapper.js'
 import { apiUrl } from '@/helpers/config.js'
-import router from '@/router'
 
-const baseUrl = `${apiUrl}/auth`
+const baseUrl = `${apiUrl}/rounds`
 
-export const useAuthStore = defineStore({
-  id: 'auth',
+export const useRoundsStore = defineStore({
+  id: 'rounds',
   state: () => ({
-    // initialize state from local storage to enable user to stay logged in
-    user: JSON.parse(localStorage.getItem('user')),
-    users_per_page: 10,
-    users_search: '',
-    users_sort_by: ['id'],
-    users_page: 1,
-    nodes_per_page: 10,
-    nodes_search: '',
-    nodes_sort_by: ['id'],
-    nodes_page: 1,
-    rounds_per_page: 10,
-    rounds_search: '',
-    rounds_sort_by: ['id'],
-    rounds_page: 1,
-    returnUrl: null,
-    re_jwt: null,
-    re_tgt: null
+    rounds: {},
+    round: {}
   }),
   actions: {
-    async check() {
-      await fetchWrapper.get(`${baseUrl}/check`)
+    async add(round) {
+      await fetchWrapper.post(`${baseUrl}/add`, round)
     },
-    async register(user) {
-      await fetchWrapper.post(`${baseUrl}/register`, user)
-    },
-    async recover(user) {
-      await fetchWrapper.post(`${baseUrl}/recover`, user)
-    },
-    async re() {
-      const re_jwt = this.re_jwt
-      this.re_jwt = null
-      const user = await fetchWrapper.put(`${baseUrl}/${this.re_tgt}`, { jwt: re_jwt })
-      this.user = user
-      localStorage.setItem('user', JSON.stringify(user))
-    },
-    async login(email, password) {
-      const user = await fetchWrapper.post(`${baseUrl}/login`, { email, password })
-      this.user = user
-      localStorage.setItem('user', JSON.stringify(user))
-      if (this.returnUrl) {
-        router.push(this.returnUrl)
-        this.returnUrl = null
+    async getAll() {
+      this.rounds = { loading: true }
+      try {
+        const url = baseUrl
+        this.rounds = await fetchWrapper.get(url)
+      } catch (error) {
+        this.rounds = { error }
       }
     },
-    logout() {
-      this.user = null
-      localStorage.removeItem('user')
-      router.push('/login')
+    async get(id) {
+      this.round = { loading: true }
+      try {
+        this.round = await fetchWrapper.get(`${baseUrl}/${id}`)
+      } catch (error) {
+        this.round = { error }
+      }
+    },
+    async update(id, params) {
+      await fetchWrapper.put(`${baseUrl}/${id}`, params)
     }
   }
 })

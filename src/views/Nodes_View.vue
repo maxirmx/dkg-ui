@@ -24,9 +24,10 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-//import Users from '@/components/Users_List.vue'
+import Nodes from '@/components/Nodes_List.vue'
+
 </script>
 
 <template>
-
+  <Nodes />
 </template>
