@@ -33,18 +33,20 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import {
-  faDownload,
+  faCalculator,
   faEye,
   faEyeSlash,
   faHand,
   faPen,
   faPlay,
   faPlus,
+  faQuestion,
   faTrashCan,
-  faUserPlus
+  faUserPlus,
+  faXmark
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faDownload, faEye, faEyeSlash, faHand, faPen, faPlay, faPlus, faTrashCan, faUserPlus)
+library.add(faCalculator, faEye, faEyeSlash, faHand, faPen, faPlay, faPlus, faQuestion, faTrashCan, faUserPlus, faXmark)
 
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'

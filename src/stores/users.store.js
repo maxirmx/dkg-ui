@@ -94,7 +94,7 @@ export const useUsersStore = defineStore({
       if (id === authStore.user.id) {
         authStore.logout()
       }
-      await fetchWrapper.delete(`${baseUrl}/${id}`, {})
+      await fetchWrapper.delete(`${baseUrl}/${id}`)
     }
   }
 })

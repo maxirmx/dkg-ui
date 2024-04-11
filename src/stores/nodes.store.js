@@ -52,6 +52,9 @@ export const useNodesStore = defineStore({
       } catch (error) {
         this.node = { error }
       }
+    },
+    async delete(id) {
+      await fetchWrapper.delete(`${baseUrl}/${id}`)
     }
   }
 })

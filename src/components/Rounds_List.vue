@@ -24,6 +24,8 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+import moment from 'moment'
+
 import { storeToRefs } from 'pinia'
 import { useRoundsStore } from '@/stores/rounds.store.js'
 import { itemsPerPageOptions } from '@/helpers/items.per.page.js'
@@ -43,14 +45,85 @@ roundsStore.getAll()
 
 const headers = [
   { title: 'Id', align: 'center', key: 'id', sortable: true },
-  { title: 'Status', align: 'center', key: 'status.name', sortable: true }
+  { title: 'Status', align: 'center', key: 'status.name', sortable: true },
+  { title: 'Created', align: 'center', key: 'createdOn', sortable: true },
+  { title: 'Modified', align: 'center', key: 'modifiedOn', sortable: true },
+  { title: '', align: 'center', key: 'actionNext', sortable: false, width: '5%' },
+  { title: '', align: 'center', key: 'actionCancel', sortable: false, width: '5%' }
 ]
+
+function filterRounds(value, query, item) {
+  if (query == null || item == null) {
+    return false
+  }
+
+  const i = item.raw
+  if (i == null) {
+    return false
+  }
+
+  const q = query.toLocaleUpperCase()
+
+  if (
+    i.id.toString().indexOf(q) !== -1 ||
+    i.status.name.toLocaleUpperCase().indexOf(q) !== -1 ||
+    formatDate(i.createdOn).toLocaleUpperCase().indexOf(q) !== -1 ||
+    formatDate(i.modifiedOn).toLocaleUpperCase().indexOf(q) !== -1
+  ) {
+    return true
+  }
+
+  return false
+}
+
+function formatDate(date) {
+  let dateObj = moment.utc(date)
+  return dateObj.local().format('lll Z')
+}
+
+async function newRound() {
+  roundsStore.add()
+  .then(() => {
+        roundsStore.getAll()
+      })
+      .catch((error) => {
+        alertStore.error(error)
+      })
+}
+
+async function cancelRound(id) {
+  roundsStore.cancel(id)
+  .then(() => {
+        roundsStore.getAll()
+      })
+      .catch((error) => {
+        alertStore.error(error)
+      })
+}
+
+async function nextRoundStep(id) {
+  roundsStore.next(id)
+  .then(() => {
+        roundsStore.getAll()
+      })
+      .catch((error) => {
+        alertStore.error(error)
+      })
+}
+
 </script>
 
 <template>
-  <div class="settings table-1">
+  <div class="settings table-2">
     <h1 class="orange">Rounds</h1>
     <hr class="hr" />
+
+    <div class="link-crt">
+      <a class="link" @click="newRound">
+        <font-awesome-icon size="1x" icon="fa-solid fa-plus" class="link" />
+        New round
+      </a>
+      </div>
 
     <v-card>
       <v-data-table
@@ -64,17 +137,48 @@ const headers = [
         :items="rounds"
         :search="authStore.rounds_search"
         v-model:sort-by="authStore.rounds_sort_by"
+        :custom-filter="filterRounds"
+        item-value="id"
         class="elevation-1"
       >
+      <template v-slot:[`item.createdOn`]="{ item }">
+          {{ formatDate(item['createdOn']) }}
+        </template>
+
+        <template v-slot:[`item.modifiedOn`]="{ item }">
+          {{ formatDate(item['modifiedOn']) }}
+        </template>
+
+        <template v-slot:[`item.actionNext`]="{ item }">
+          <button @click="nextRoundStep(item['id'])" class="anti-btn" v-if="item['isVersatile']">
+            <font-awesome-icon size="1x" :icon= "'fa-solid ' + item['nextStatus'].actionIcon" class="anti-btn" />
+          </button>
+          <v-tooltip v-if="item['isVersatile']"
+              activator="parent"
+            >{{ item['nextStatus'].actionName }}</v-tooltip>
+        </template>
+
+        <template v-slot:[`item.actionCancel`]="{ item }">
+          <button @click="cancelRound(item['id'])" class="anti-btn" v-if="item['isVersatile']">
+            <font-awesome-icon size="1x" :icon= "'fa-solid ' + item['cancelStatus'].actionIcon" class="anti-btn" />
+            <v-tooltip v-if="item['isVersatile']"
+              activator="parent"
+            >{{ item['cancelStatus'].actionName }}</v-tooltip>
+          </button>
+        </template>
       </v-data-table>
       <v-spacer></v-spacer>
-      <v-text-field
-        v-model="authStore.rounds_search"
-        :append-inner-icon="mdiMagnify"
-        label="Search"
-        variant="solo"
-        hide-details
-      ></v-text-field>
+      <div v-if="!rounds?.length" class="text-center m-5">No rounds</div>
+      <div v-if="rounds?.length">
+        <v-text-field
+          v-model="authStore.rounds_search"
+          :append-inner-icon="mdiMagnify"
+          label="Search any round information"
+          variant="solo"
+          hide-details
+        />
+      </div>
+
     </v-card>
     <div v-if="rounds?.error" class="text-center m-5">
       <div class="text-danger">Failed to load rounds list: {{ rounds.error }}</div>

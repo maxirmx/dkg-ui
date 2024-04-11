@@ -56,8 +56,11 @@ export const useRoundsStore = defineStore({
         this.round = { error }
       }
     },
-    async update(id, params) {
-      await fetchWrapper.put(`${baseUrl}/${id}`, params)
+    async cancel(id) {
+      await fetchWrapper.post(`${baseUrl}/cancel/${id}`)
+    },
+    async next(id) {
+      await fetchWrapper.post(`${baseUrl}/next/${id}`)
     }
   }
 })

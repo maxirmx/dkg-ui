@@ -41,15 +41,76 @@ const nodesStore = useNodesStore()
 const { nodes } = storeToRefs(nodesStore)
 nodesStore.getAll()
 
+import { useConfirm } from 'vuetify-use-dialog'
+const confirm = useConfirm()
+
 const headers = [
   { title: 'Id', align: 'center', key: 'id', sortable: true },
-  { title: 'Address', align: 'center', key: 'address', sortable: true },
-  { title: 'Round', align: 'center', key: 'round_id', sortable: true }
+  { title: 'Name', align: 'center', key: 'name', sortable: true },
+  { title: 'Host', align: 'center', key: 'host', sortable: true },
+  { title: 'Port', align: 'center', key: 'port', sortable: true },
+  { title: 'Round', align: 'center', key: 'round_id', sortable: true },
+  { title: '', align: 'center', key: 'actions1', sortable: false, width: '5%' }
 ]
+
+async function deleteNode(item) {
+  const content = 'Do you want to delete "' + item.name + '" ?'
+  const result = await confirm({
+    title: 'Confirmation',
+    confirmationText: 'Delete',
+    cancellationText: 'Do not delete',
+    dialogProps: {
+      width: '30%',
+      minWidth: '250px'
+    },
+    confirmationButtonProps: {
+      color: 'orange-darken-3'
+    },
+    content: content
+  })
+
+  if (result) {
+    nodesStore
+      .delete(item.id)
+      .then(() => {
+        nodesStore.getAll()
+      })
+      .catch((error) => {
+        alertStore.error(error)
+      })
+  }
+}
+
+
+function filterNodes(value, query, item) {
+  if (query == null || item == null) {
+    return false
+  }
+
+  const i = item.raw
+  if (i == null) {
+    return false
+  }
+
+  const q = query.toLocaleUpperCase()
+
+  if (
+    i.id.toString().indexOf(q) !== -1 ||
+    i.name.toLocaleUpperCase().indexOf(q) !== -1 ||
+    i.host.toLocaleUpperCase().indexOf(q) !== -1 ||
+    i.port.toString().indexOf(q) !== -1 ||
+    (i.round_id != null && i.round_id.toString().indexOf(q) !== -1)
+  ) {
+    return true
+  }
+
+  return false
+}
+
 </script>
 
 <template>
-  <div class="settings table-1">
+  <div class="settings table-2">
     <h1 class="orange">Nodes</h1>
     <hr class="hr" />
 
@@ -65,17 +126,27 @@ const headers = [
         :items="nodes"
         :search="authStore.nodes_search"
         v-model:sort-by="authStore.nodes_sort_by"
+        :custom-filter="filterNodes"
+        item-value="id"
         class="elevation-1"
       >
+      <template v-slot:[`item.actions1`]="{ item }">
+          <button @click="deleteNode(item)" class="anti-btn" v-if="authStore.user?.isAdmin">
+            <font-awesome-icon size="1x" icon="fa-solid fa-trash-can" class="anti-btn" />
+          </button>
+        </template>
       </v-data-table>
       <v-spacer></v-spacer>
-      <v-text-field
-        v-model="authStore.nodes_search"
-        :append-inner-icon="mdiMagnify"
-        label="Search"
-        variant="solo"
-        hide-details
-      ></v-text-field>
+      <div v-if="!nodes?.length" class="text-center m-5">No nodes</div>
+      <div v-if="nodes?.length">
+        <v-text-field
+          v-model="authStore.nodes_search"
+          :append-inner-icon="mdiMagnify"
+          label="Search any node information"
+          variant="solo"
+          hide-details
+        />
+      </div>
     </v-card>
     <div v-if="nodes?.error" class="text-center m-5">
       <div class="text-danger">Failed to load nodes list: {{ nodes.error }}</div>

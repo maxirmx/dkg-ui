@@ -72,7 +72,7 @@ function filterUsers(value, query, item) {
   const q = query.toLocaleUpperCase()
 
   if (
-    i.lastname.toLocaleUpperCase().indexOf(q) !== -1 ||
+    i.name.toLocaleUpperCase().indexOf(q) !== -1 ||
     i.email.toLocaleUpperCase().indexOf(q) !== -1
   ) {
     return true
@@ -117,7 +117,6 @@ const headers = [
   { title: 'User', align: 'start', key: 'id' },
   { title: 'E-mail', align: 'start', key: 'email' },
   { title: 'Credentials', align: 'start', key: 'credentials', sortable: false },
-  { title: '', align: 'center', key: 'actions0', sortable: false, width: '5%' },
   { title: '', align: 'center', key: 'actions1', sortable: false, width: '5%' },
   { title: '', align: 'center', key: 'actions2', sortable: false, width: '5%' }
 ]
