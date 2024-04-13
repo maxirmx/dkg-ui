@@ -29,10 +29,12 @@ jobs:
       run: |
         cd dist
         TAG_NAME=${GITHUB_REF#refs/tags/}
-        tar -czf ../dkg-frontend-$TAG_NAME.tar.gz *
+        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+        tar -czvf ../dkg-frontend-$TAG_NAME.tar.gz *
+        ls ../dkg-frontend-*.tar.gz
 
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
-        files: 'dkg-frontend-*.tar.gz'
+        files: 'dkg-frontend-${{ env.TAG_NAME }}.tar.gz'
         prerelease: ${{ contains(github.ref, '.rc') && 'true' || 'false' }}
