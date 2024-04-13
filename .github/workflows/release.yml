@@ -1,41 +1,15 @@
-name: CI workflow
+name: Release workflow
 
 on:
   push:
-    branches: [ main ]
     tags:     [ 'v*' ]
-  pull_request:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Install Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20.x'
-        cache: npm
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run linting
-      run: npm run lint
-
-    - name: Run tests
-      run: npm run test-unit
-
-# ----- Release -----
   release:
     name: Release
     needs: [ build ]
     runs-on: ubuntu-latest
-    if: contains(github.ref, 'refs/tags/v')
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
