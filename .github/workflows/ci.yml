@@ -56,7 +56,7 @@ jobs:
       run: |
         cd dist
         TAG_NAME=${GITHUB_REF#refs/tags/}
-        tar -czf ../dkg-frontend-${{ env.TAG_NAME }}.tar.gz *
+        tar -czf ../dkg-frontend-$TAG_NAME.tar.gz *
 
     - name: Release
       uses: softprops/action-gh-release@v2
