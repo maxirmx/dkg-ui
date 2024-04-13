@@ -9,7 +9,7 @@
     "test:unit": "vitest",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "deploy": "scp -rp dist/* root@kreel0.samsonov.net:/var/www/kreel0"
+    "deploy": "scp -rp dist/* root@dkg.samsonov.net:/var/www/dkg"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.0",
