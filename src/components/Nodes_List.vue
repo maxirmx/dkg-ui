@@ -24,6 +24,8 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+import { onMounted, onUnmounted } from 'vue'
+
 import { storeToRefs } from 'pinia'
 import { useNodesStore } from '@/stores/nodes.store.js'
 import { itemsPerPageOptions } from '@/helpers/items.per.page.js'
@@ -49,12 +51,14 @@ const headers = [
   { title: 'Name', align: 'center', key: 'name', sortable: true },
   { title: 'Host', align: 'center', key: 'host', sortable: true },
   { title: 'Port', align: 'center', key: 'port', sortable: true },
-  { title: 'Round', align: 'center', key: 'round_id', sortable: true },
+  { title: 'Last round', align: 'center', key: 'roundId', sortable: true },
   { title: '', align: 'center', key: 'actions1', sortable: false, width: '5%' }
 ]
 
 async function deleteNode(item) {
-  const content = 'Do you want to delete "' + item.name + '" ?'
+  const content = 'Do you want to delete information about"' + item.name + '" ? ' +
+                  'Please note that it won\'t unregister it from current rounds ' +
+                  'or prevent from applying to future rounds.'
   const result = await confirm({
     title: 'Confirmation',
     confirmationText: 'Delete',
@@ -106,6 +110,20 @@ function filterNodes(value, query, item) {
 
   return false
 }
+
+let intervalId = null
+
+onMounted(() => {
+  intervalId = setInterval(() => {
+    nodesStore.getAll()
+  }, 10000)
+})
+
+onUnmounted(() => {
+  if (intervalId) {
+    clearInterval(intervalId)
+  }
+})
 
 </script>
 

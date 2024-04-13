@@ -23,8 +23,6 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-export const apiUrl = 'http://localhost:8080/api'
-//`${import.meta.env.VITE_API_URL}`
-//export const apiUrl = 'http://kreel0.samsonov.net:8081/api'
-//export const apiUrl = 'http://77.232.136.132:8081/api'
-export const enableLog = true
+//export const apiUrl = 'http://localhost:8080/api'
+export const apiUrl = 'http://dkg.samsonov.net:8081/api'
+export const enableLog = false

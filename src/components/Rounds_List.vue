@@ -24,6 +24,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+import { onMounted, onUnmounted } from 'vue'
 import moment from 'moment'
 
 import { storeToRefs } from 'pinia'
@@ -46,6 +47,8 @@ roundsStore.getAll()
 const headers = [
   { title: 'Id', align: 'center', key: 'id', sortable: true },
   { title: 'Status', align: 'center', key: 'status.name', sortable: true },
+  { title: 'Result', align: 'center', key: 'result', sortable: false },
+  { title: 'Participants', align: 'center', key: 'nodeCount', sortable: true },
   { title: 'Created', align: 'center', key: 'createdOn', sortable: true },
   { title: 'Modified', align: 'center', key: 'modifiedOn', sortable: true },
   { title: '', align: 'center', key: 'actionNext', sortable: false, width: '5%' },
@@ -66,6 +69,7 @@ function filterRounds(value, query, item) {
 
   if (
     i.id.toString().indexOf(q) !== -1 ||
+    (i.result != null && i.result.toString().indexOf(q) !== -1) ||
     i.status.name.toLocaleUpperCase().indexOf(q) !== -1 ||
     formatDate(i.createdOn).toLocaleUpperCase().indexOf(q) !== -1 ||
     formatDate(i.modifiedOn).toLocaleUpperCase().indexOf(q) !== -1
@@ -79,6 +83,19 @@ function filterRounds(value, query, item) {
 function formatDate(date) {
   let dateObj = moment.utc(date)
   return dateObj.local().format('lll Z')
+}
+
+function formatResult(result) {
+  if (result == null) {
+    return '--'
+  }
+
+  let str = result.toString();
+  str = str.slice(-6);
+  str = str.padStart(6, '0');
+  let groups = str.match(/.{1,2}/g);
+  let formatted = groups.join(' ');
+  return formatted;
 }
 
 async function newRound() {
@@ -111,6 +128,20 @@ async function nextRoundStep(id) {
       })
 }
 
+let intervalId = null
+
+onMounted(() => {
+  intervalId = setInterval(() => {
+    roundsStore.getAll()
+  }, 10000)
+})
+
+onUnmounted(() => {
+  if (intervalId) {
+    clearInterval(intervalId)
+  }
+})
+
 </script>
 
 <template>
@@ -141,7 +172,11 @@ async function nextRoundStep(id) {
         item-value="id"
         class="elevation-1"
       >
-      <template v-slot:[`item.createdOn`]="{ item }">
+      <template v-slot:[`item.result`]="{ item }">
+          {{ formatResult(item['result']) }}
+        </template>
+
+        <template v-slot:[`item.createdOn`]="{ item }">
           {{ formatDate(item['createdOn']) }}
         </template>
 
