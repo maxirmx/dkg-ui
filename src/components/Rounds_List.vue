@@ -141,7 +141,7 @@ const updateDataGrid = async () => {
     if (!roundsU?.loading && !roundsU?.loading)
     {
       const oldData = [...rounds.value]
-
+      const newItems = []
       for (const newItem of roundsU.value) {
         const oldItem = rounds.value.find(item => item.id === newItem.id)
         if (oldItem) {
@@ -150,9 +150,10 @@ const updateDataGrid = async () => {
           }
         }
         else {
-          rounds.value.push(newItem)
+          newItems.push(newItem)
         }
       }
+      rounds.value.unshift(...newItems.reverse())
       for (const oldItem of oldData) {
         const newItem = roundsU.value.find(item => item.id === oldItem.id)
         if (!newItem) {
