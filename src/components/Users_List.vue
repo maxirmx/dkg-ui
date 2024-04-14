@@ -50,7 +50,7 @@ function userSettings(item) {
   router.push('user/edit/' + id)
 }
 
-function getCredentials(item) {
+function getRoles(item) {
   let crd = null
   if (item) {
     crd = ''
@@ -78,7 +78,7 @@ function filterUsers(value, query, item) {
     return true
   }
 
-  const crd = getCredentials(i)
+  const crd = getRoles(i)
   if (crd.toLocaleUpperCase().indexOf(q) !== -1) {
     return true
   }
@@ -116,7 +116,7 @@ async function deleteUser(item) {
 const headers = [
   { title: 'User', align: 'start', key: 'id' },
   { title: 'E-mail', align: 'start', key: 'email' },
-  { title: 'Credentials', align: 'start', key: 'credentials', sortable: false },
+  { title: 'Roles', align: 'start', key: 'roles', sortable: false },
   { title: '', align: 'center', key: 'actions1', sortable: false, width: '5%' },
   { title: '', align: 'center', key: 'actions2', sortable: false, width: '5%' }
 ]
@@ -157,8 +157,8 @@ const headers = [
           {{ item['name'] }}
         </template>
 
-        <template v-slot:[`item.credentials`]="{ item }">
-          <span v-html="getCredentials(item)"></span>
+        <template v-slot:[`item.roles`]="{ item }">
+          <span v-html="getRoles(item)"></span>
         </template>
 
         <template v-slot:[`item.actions1`]="{ item }">

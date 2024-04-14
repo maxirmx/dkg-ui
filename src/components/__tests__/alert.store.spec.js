@@ -23,8 +23,35 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-//export const apiUrl = 'https://localhost:8081/api'
-//import { env } from 'dotenv'
+import { it, describe, expect, beforeEach } from 'vitest'
+import { useAlertStore } from '@/stores/alert.store'
+import { createPinia } from 'pinia'
 
-export const apiUrl = `https://${import.meta.env.VITE_API_HOST}:8081/api`
-export const enableLog = false
+describe('alert.store.js', () => {
+  let store
+
+  beforeEach(() => {
+    const pinia = createPinia()
+    store = useAlertStore(pinia)
+  })
+
+  it('initializes with a null alert', () => {
+    expect(store.alert).toBeNull()
+  })
+
+  it('sets a success alert', () => {
+    store.success('Success message')
+    expect(store.alert).toEqual({ message: 'Success message', type: 'alert-success' })
+  })
+
+  it('sets an error alert', () => {
+    store.error('Error message')
+    expect(store.alert).toEqual({ message: 'Error message', type: 'alert-danger' })
+  })
+
+  it('clears the alert', () => {
+    store.success('Success message')
+    store.clear()
+    expect(store.alert).toBeNull()
+  })
+})

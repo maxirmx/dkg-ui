@@ -33,6 +33,7 @@ export const useRoundsStore = defineStore({
   id: 'rounds',
   state: () => ({
     rounds: {},
+    roundsU: {},
     round: {}
   }),
   actions: {
@@ -46,6 +47,15 @@ export const useRoundsStore = defineStore({
         this.rounds = await fetchWrapper.get(url)
       } catch (error) {
         this.rounds = { error }
+      }
+    },
+    async getAllU() {
+      this.roundsU = { loading: true }
+      try {
+        const url = baseUrl
+        this.roundsU = await fetchWrapper.get(url)
+      } catch (error) {
+        this.roundsU = { error }
       }
     },
     async get(id) {

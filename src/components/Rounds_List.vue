@@ -41,7 +41,7 @@ const { alert } = storeToRefs(alertStore)
 const authStore = useAuthStore()
 
 const roundsStore = useRoundsStore()
-const { rounds } = storeToRefs(roundsStore)
+const { rounds, roundsU } = storeToRefs(roundsStore)
 roundsStore.getAll()
 
 const headers = [
@@ -101,7 +101,7 @@ function formatResult(result) {
 async function newRound() {
   roundsStore.add()
   .then(() => {
-        roundsStore.getAll()
+        updateDataGrid()
       })
       .catch((error) => {
         alertStore.error(error)
@@ -111,7 +111,7 @@ async function newRound() {
 async function cancelRound(id) {
   roundsStore.cancel(id)
   .then(() => {
-        roundsStore.getAll()
+        updateDataGrid()
       })
       .catch((error) => {
         alertStore.error(error)
@@ -121,18 +121,60 @@ async function cancelRound(id) {
 async function nextRoundStep(id) {
   roundsStore.next(id)
   .then(() => {
-        roundsStore.getAll()
+        updateDataGrid()
       })
       .catch((error) => {
         alertStore.error(error)
       })
 }
 
+let isUpdating = false
+
+const updateDataGrid = async () => {
+  if (isUpdating) {
+    return
+  }
+
+  isUpdating = true
+  try {
+    await roundsStore.getAllU()
+    if (!roundsU?.loading && !roundsU?.loading)
+    {
+      const oldData = [...rounds.value]
+
+      for (const newItem of roundsU.value) {
+        const oldItem = rounds.value.find(item => item.id === newItem.id)
+        if (oldItem) {
+          if (JSON.stringify(oldItem) !== JSON.stringify(newItem)) {
+            Object.assign(oldItem, newItem)
+          }
+        }
+        else {
+          rounds.value.push(newItem)
+        }
+      }
+      for (const oldItem of oldData) {
+        const newItem = roundsU.value.find(item => item.id === oldItem.id)
+        if (!newItem) {
+          const index = rounds.value.indexOf(oldItem)
+          rounds.value.splice(index, 1)
+        }
+      }
+    }
+  }
+  catch {
+    alertStore.error('Failed to update rounds list')
+  }
+  finally {
+    isUpdating = false
+  }
+}
+
 let intervalId = null
 
 onMounted(() => {
   intervalId = setInterval(() => {
-    roundsStore.getAll()
+    updateDataGrid()
   }, 10000)
 })
 

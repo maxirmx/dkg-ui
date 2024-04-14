@@ -41,7 +41,6 @@ import { useVersionsStore } from '@/stores/versions.store.js'
 const versionsStore = useVersionsStore()
 const { currentVersion } = storeToRefs(versionsStore)
 versionsStore.getCurrent()
-console.log('dbVersion = ' + currentVersion.value)
 import { drawer, toggleDrawer } from '@/helpers/drawer.js'
 
 function deauth() {
