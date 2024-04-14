@@ -137,7 +137,7 @@ const updateDataGrid = async () => {
           newItems.push(newItem)
         }
       }
-      rounds.value.unshift(...newItems)
+      nodes.value.unshift(...newItems)
 
       for (const oldItem of oldData) {
         const newItem = nodesU.value.find(item => item.id === oldItem.id)
