@@ -40,7 +40,7 @@ const { alert } = storeToRefs(alertStore)
 const authStore = useAuthStore()
 
 const nodesStore = useNodesStore()
-const { nodes } = storeToRefs(nodesStore)
+const { nodes, nodesU } = storeToRefs(nodesStore)
 nodesStore.getAll()
 
 import { useConfirm } from 'vuetify-use-dialog'
@@ -56,7 +56,7 @@ const headers = [
 ]
 
 async function deleteNode(item) {
-  const content = 'Do you want to delete information about"' + item.name + '" ? ' +
+  const content = 'Do you want to delete information about "' + item.name + '" ? ' +
                   'Please note that it won\'t unregister it from current rounds ' +
                   'or prevent from applying to future rounds.'
   const result = await confirm({
@@ -77,7 +77,7 @@ async function deleteNode(item) {
     nodesStore
       .delete(item.id)
       .then(() => {
-        nodesStore.getAll()
+        updateDataGrid()
       })
       .catch((error) => {
         alertStore.error(error)
@@ -111,11 +111,53 @@ function filterNodes(value, query, item) {
   return false
 }
 
+let isUpdating = false
+
+const updateDataGrid = async () => {
+  if (isUpdating) {
+    return
+  }
+
+  isUpdating = true
+  try {
+    await nodesStore.getAllU()
+    if (!nodesU?.loading && !nodesU?.loading)
+    {
+      const oldData = [...nodes.value]
+
+      for (const newItem of nodesU.value) {
+        const oldItem = nodes.value.find(item => item.id === newItem.id)
+        if (oldItem) {
+          if (JSON.stringify(oldItem) !== JSON.stringify(newItem)) {
+            Object.assign(oldItem, newItem)
+          }
+        }
+        else {
+          nodes.value.push(newItem)
+        }
+      }
+      for (const oldItem of oldData) {
+        const newItem = nodesU.value.find(item => item.id === oldItem.id)
+        if (!newItem) {
+          const index = nodes.value.indexOf(oldItem)
+          nodes.value.splice(index, 1)
+        }
+      }
+    }
+  }
+  catch {
+    alertStore.error('Failed to update nodes list')
+  }
+  finally {
+    isUpdating = false
+  }
+}
+
 let intervalId = null
 
 onMounted(() => {
   intervalId = setInterval(() => {
-    nodesStore.getAll()
+    updateDataGrid()
   }, 10000)
 })
 

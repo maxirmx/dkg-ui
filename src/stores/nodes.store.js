@@ -33,6 +33,7 @@ export const useNodesStore = defineStore({
   id: 'nodes',
   state: () => ({
     nodes: {},
+    nodesU: {},
     node: {}
   }),
   actions: {
@@ -43,6 +44,15 @@ export const useNodesStore = defineStore({
         this.nodes = await fetchWrapper.get(url)
       } catch (error) {
         this.nodes = { error }
+      }
+    },
+    async getAllU() {
+      this.nodesU = { loading: true }
+      try {
+        const url = baseUrl
+        this.nodesU = await fetchWrapper.get(url)
+      } catch (error) {
+        this.nodesU = { error }
       }
     },
     async get(id) {
