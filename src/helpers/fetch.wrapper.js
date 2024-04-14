@@ -66,7 +66,7 @@ function authHeader(url) {
   }
 }
 
-function handleResponse(response) {
+export function handleResponse(response) {
   if (response.status == 204) {
     console.log(response.status, response.statusText)
     return Promise.resolve()
