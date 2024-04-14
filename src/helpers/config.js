@@ -23,6 +23,6 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-//export const apiUrl = 'http://localhost:8080/api'
-export const apiUrl = 'http://dkg.samsonov.net:8081/api'
+//export const apiUrl = 'https://localhost:8081/api'
+export const apiUrl = 'https://dkg.samsonov.net:8081/api'
 export const enableLog = false
