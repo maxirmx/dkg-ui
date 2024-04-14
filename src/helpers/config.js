@@ -24,5 +24,5 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 //export const apiUrl = 'https://localhost:8081/api'
-export const apiUrl = 'httpsq://dkg.samsonov.net:8081/api'
+export const apiUrl = 'https://dkg.samsonov.net:8081/api'
 export const enableLog = false
