@@ -215,8 +215,8 @@ onUnmounted(() => {
         item-value="id"
         class="elevation-1"
       >
-      <template v-slot:[`item.result`]="{ item }">
-          {{ formatResult(item['result']) }}
+        <template v-slot:[`item.result`]="{ item }">
+            {{ formatResult(item['result']) }}
         </template>
 
         <template v-slot:[`item.createdOn`]="{ item }">
@@ -232,8 +232,8 @@ onUnmounted(() => {
             <font-awesome-icon size="1x" :icon= "'fa-solid ' + item['nextStatus'].actionIcon" class="anti-btn" />
           </button>
           <v-tooltip v-if="item['isVersatile']"
-              activator="parent"
-            >{{ item['nextStatus'].actionName }}</v-tooltip>
+            activator="parent"
+          >{{ item['nextStatus'].actionName }}</v-tooltip>
         </template>
 
         <template v-slot:[`item.actionCancel`]="{ item }">
@@ -248,16 +248,15 @@ onUnmounted(() => {
       <v-spacer></v-spacer>
       <div v-if="!rounds?.length" class="text-center m-5">No rounds</div>
       <div v-if="rounds?.length">
-        <v-text-field
-          v-model="authStore.rounds_search"
-          :append-inner-icon="mdiMagnify"
-          label="Search any round information"
-          variant="solo"
-          hide-details
-        />
-      </div>
-
-    </v-card>
+      <v-text-field
+        v-model="authStore.rounds_search"
+        :append-inner-icon="mdiMagnify"
+        label="Search any round information"
+        variant="solo"
+        hide-details
+      />
+    </div>
+  </v-card>
     <div v-if="rounds?.error" class="text-center m-5">
       <div class="text-danger">Failed to load rounds list: {{ rounds.error }}</div>
     </div>
