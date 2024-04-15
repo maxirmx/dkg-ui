@@ -25,44 +25,44 @@ describe('handleResponse', () => {
     const mockData = { key: 'value' }
     fetchStub.resolves(new Response(JSON.stringify(mockData)))
 
-    const result = await fetchWrapper.get('http://dummy.url')
+    const result = await fetchWrapper.get('http://example.com')
 
     expect(result).to.deep.equal(mockData)
-    sinon.assert.calledWith(fetchStub, 'http://dummy.url', sinon.match.has('method', 'GET'))
+    sinon.assert.calledWith(fetchStub, 'http://example.com', sinon.match.has('method', 'GET'))
   })
 
   it('should make a POST request', async () => {
     const mockData = { key: 'value' }
     fetchStub.resolves(new Response(JSON.stringify(mockData)))
 
-    const result = await fetchWrapper.post('http://dummy.url', mockData)
+    const result = await fetchWrapper.post('http://example.com', mockData)
 
     expect(result).to.deep.equal(mockData)
-    sinon.assert.calledWith(fetchStub, 'http://dummy.url', sinon.match.has('method', 'POST'))
-    sinon.assert.calledWith(fetchStub, 'http://dummy.url', sinon.match.hasNested('headers.Content-Type', 'application/json'))
-    sinon.assert.calledWith(fetchStub, 'http://dummy.url', sinon.match.has('body', JSON.stringify(mockData)))
+    sinon.assert.calledWith(fetchStub, 'http://example.com', sinon.match.has('method', 'POST'))
+    sinon.assert.calledWith(fetchStub, 'http://example.com', sinon.match.hasNested('headers.Content-Type', 'application/json'))
+    sinon.assert.calledWith(fetchStub, 'http://example.com', sinon.match.has('body', JSON.stringify(mockData)))
   })
 
   it('should make a PUT request', async () => {
     const mockData = { key: 'value' }
     fetchStub.resolves(new Response(JSON.stringify(mockData)))
 
-    const result = await fetchWrapper.put('http://dummy.url', mockData)
+    const result = await fetchWrapper.put('http://example.com', mockData)
 
     expect(result).to.deep.equal(mockData)
-    sinon.assert.calledWith(fetchStub, 'http://dummy.url', sinon.match.has('method', 'PUT'))
-    sinon.assert.calledWith(fetchStub, 'http://dummy.url', sinon.match.hasNested('headers.Content-Type', 'application/json'))
-    sinon.assert.calledWith(fetchStub, 'http://dummy.url', sinon.match.has('body', JSON.stringify(mockData)))
+    sinon.assert.calledWith(fetchStub, 'http://example.com', sinon.match.has('method', 'PUT'))
+    sinon.assert.calledWith(fetchStub, 'http://example.com', sinon.match.hasNested('headers.Content-Type', 'application/json'))
+    sinon.assert.calledWith(fetchStub, 'http://example.com', sinon.match.has('body', JSON.stringify(mockData)))
   })
 
   it('should make a DELETE request', async () => {
     const mockData = { key: 'value' }
     fetchStub.resolves(new Response(JSON.stringify(mockData)))
 
-    const result = await fetchWrapper.delete('http://dummy.url')
+    const result = await fetchWrapper.delete('http://example.com')
 
     expect(result).to.deep.equal(mockData)
-    sinon.assert.calledWith(fetchStub, 'http://dummy.url', sinon.match.has('method', 'DELETE'))
+    sinon.assert.calledWith(fetchStub, 'http://example.com', sinon.match.has('method', 'DELETE'))
   })
 
   it('should return auth header if user is logged in and url starts with base url', () => {
@@ -78,7 +78,7 @@ describe('handleResponse', () => {
     const authStore = useAuthStore()
     sandbox.stub(authStore, 'user').value({ token: 'dummyToken' })
 
-    const headers = authHeader('https://google.com/dummy')
+    const headers = authHeader('https://example.com/dummy')
 
     expect(headers).to.deep.equal({})
   })
