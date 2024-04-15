@@ -14,7 +14,7 @@ describe('handleResponse', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     sandbox = sinon.createSandbox()
-    fetchStub = sandbox.stub(window, 'fetch')
+    fetchStub = sandbox.stub(global, 'fetch')
   })
 
   afterEach(() => {
