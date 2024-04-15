@@ -55,7 +55,7 @@ function request(method) {
 
 // helper functions
 
-function authHeader(url) {
+export function authHeader(url) {
   // return auth header with jwt if user is logged in and request is to the api url
   const { user } = useAuthStore()
   const isLoggedIn = !!user?.token

@@ -111,6 +111,13 @@ function filterNodes(value, query, item) {
   return false
 }
 
+function formatRound(roundId) {
+  if (roundId == null) {
+    return '--'
+  }
+  return roundId.toString()
+}
+
 let isUpdating = false
 
 const updateDataGrid = async () => {
@@ -193,6 +200,10 @@ onUnmounted(() => {
         item-value="id"
         class="elevation-1"
       >
+      <template v-slot:[`item.roundId`]="{ item }">
+        {{ formatRound(item['roundId']) }}
+      </template>
+
       <template v-slot:[`item.actions1`]="{ item }">
           <button @click="deleteNode(item)" class="anti-btn" v-if="authStore.user?.isAdmin">
             <font-awesome-icon size="1x" icon="fa-solid fa-trash-can" class="anti-btn" />
