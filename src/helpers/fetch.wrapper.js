@@ -48,7 +48,7 @@ function request(method) {
     if (enableLog) {
       console.log(url, requestOptions)
     }
-    const response = await fetch(url, requestOptions)
+    const response = await global.fetch(url, requestOptions)
     return handleResponse(response)
   }
 }
