@@ -51,18 +51,19 @@ const headers = [
   { title: 'Name', align: 'center', key: 'name', sortable: true },
   { title: 'Host', align: 'center', key: 'host', sortable: true },
   { title: 'Port', align: 'center', key: 'port', sortable: true },
-  { title: 'Last round', align: 'center', key: 'roundId', sortable: true },
+  { title: 'Round', align: 'center', key: 'roundId', sortable: true },
+  { title: 'Status', align: 'center', key: 'status.name', sortable: true },
   { title: '', align: 'center', key: 'actions1', sortable: false, width: '5%' }
 ]
 
-async function deleteNode(item) {
-  const content = 'Do you want to delete information about "' + item.name + '" ? ' +
-                  'Please note that it won\'t unregister it from current rounds ' +
-                  'or prevent from applying to future rounds.'
+async function resetNode(item) {
+  const content = 'Do you want to reset "' + item.name + '" ? ' +
+                  'Please note that it will unregister the node from current rounds ' +
+                  'but won\'t prevent from applying to future rounds.'
   const result = await confirm({
     title: 'Confirmation',
-    confirmationText: 'Delete',
-    cancellationText: 'Do not delete',
+    confirmationText: 'Reset',
+    cancellationText: 'Do not reset',
     dialogProps: {
       width: '30%',
       minWidth: '250px'
@@ -75,7 +76,7 @@ async function deleteNode(item) {
 
   if (result) {
     nodesStore
-      .delete(item.id)
+      .reset(item.id)
       .then(() => {
         updateDataGrid()
       })
@@ -205,9 +206,11 @@ onUnmounted(() => {
       </template>
 
       <template v-slot:[`item.actions1`]="{ item }">
-          <button @click="deleteNode(item)" class="anti-btn" v-if="authStore.user?.isAdmin">
-            <font-awesome-icon size="1x" icon="fa-solid fa-trash-can" class="anti-btn" />
+          <button @click="resetNode(item)" class="anti-btn" v-if="authStore.user?.isAdmin">
+            <font-awesome-icon size="1x" icon="fa-solid fa-xmark" />
           </button>
+          <v-tooltip activator="parent">Reset</v-tooltip>
+
         </template>
       </v-data-table>
       <v-spacer></v-spacer>

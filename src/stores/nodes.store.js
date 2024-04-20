@@ -65,6 +65,9 @@ export const useNodesStore = defineStore({
     },
     async delete(id) {
       await fetchWrapper.delete(`${baseUrl}/${id}`)
+    },
+    async reset(id) {
+      await fetchWrapper.post(`${baseUrl}/reset/${id}`)
     }
   }
 })
