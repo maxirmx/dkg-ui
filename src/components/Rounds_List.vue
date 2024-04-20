@@ -49,8 +49,11 @@ const headers = [
   { title: 'Status', align: 'center', key: 'status.name', sortable: true },
   { title: 'Result', align: 'center', key: 'result', sortable: false },
   { title: 'Participants', align: 'center', key: 'nodeCount', sortable: true },
+  { title: 'Running', align: 'center', key: 'nodeCountRunning', sortable: true },
+  { title: 'Failed', align: 'center', key: 'nodeCountFailed', sortable: true },
+  { title: 'Finished', align: 'center', key: 'nodeCountFinished', sortable: true },
   { title: 'Created', align: 'center', key: 'createdOn', sortable: true },
-  { title: 'Modified', align: 'center', key: 'modifiedOn', sortable: true },
+//  { title: 'Modified', align: 'center', key: 'modifiedOn', sortable: true },
   { title: '', align: 'center', key: 'actionNext', sortable: false, width: '5%' },
   { title: '', align: 'center', key: 'actionCancel', sortable: false, width: '5%' }
 ]
@@ -176,7 +179,7 @@ let intervalId = null
 onMounted(() => {
   intervalId = setInterval(() => {
     updateDataGrid()
-  }, 10000)
+  }, 1000)
 })
 
 onUnmounted(() => {
@@ -188,7 +191,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="settings table-2">
+  <div class="settings table-3">
     <h1 class="orange">Rounds</h1>
     <hr class="hr" />
 

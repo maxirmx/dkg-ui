@@ -27,4 +27,4 @@
 //import { env } from 'dotenv'
 
 export const apiUrl = `https://${import.meta.env.VITE_API_HOST}:8081/api`
-export const enableLog = false
+export const enableLog = true
