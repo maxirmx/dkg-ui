@@ -74,17 +74,12 @@ const vuetify = createVuetify({
   }
 })
 
-const VInlineFields = createVInlineFields({
-  saveIcon: 'mdi:1mdi-minus'
-});
-
 const app = createApp(App)
   .component('font-awesome-icon', FontAwesomeIcon)
   .use(createPinia())
   .use(router)
   .use(vuetify)
   .use(VuetifyUseDialog)
-  .use(VInlineFields)
 
 const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
