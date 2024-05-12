@@ -180,6 +180,17 @@ a,
   font-size: 1.1rem;
 }
 
+.link-ext {
+  font-size: 1.1rem;
+  color: #1762ae;
+}
+
+.link-input {
+  width: 75px;
+  color: #1762ae;
+  font-size: 1.0rem;
+}
+
 .green {
   text-decoration: none;
   color: hsla(160, 100%, 37%, 1);
@@ -262,6 +273,17 @@ a,
   }
   .link {
     font-size: 1.2rem;
+  }
+
+  .link-ext {
+    font-size: 1.2rem;
+    color: #1762ae;
+  }
+
+  .link-input {
+    width: 75px;
+    color: #1762ae;
+    font-size: 1.1rem;
   }
 
   .v-data-table-footer .v-data-table-footer__info,

@@ -49,8 +49,7 @@ const confirm = useConfirm()
 const headers = [
   { title: 'Id', align: 'center', key: 'id', sortable: true },
   { title: 'Name', align: 'center', key: 'name', sortable: true },
-  { title: 'Host', align: 'center', key: 'host', sortable: true },
-  { title: 'Port', align: 'center', key: 'port', sortable: true },
+  { title: 'GUID', align: 'center', key: 'GUID', sortable: true },
   { title: 'Round', align: 'center', key: 'roundId', sortable: true },
   { title: 'Status', align: 'center', key: 'status.name', sortable: true },
   { title: '', align: 'center', key: 'actions1', sortable: false, width: '5%' }
@@ -102,8 +101,7 @@ function filterNodes(value, query, item) {
   if (
     i.id.toString().indexOf(q) !== -1 ||
     i.name.toLocaleUpperCase().indexOf(q) !== -1 ||
-    i.host.toLocaleUpperCase().indexOf(q) !== -1 ||
-    i.port.toString().indexOf(q) !== -1 ||
+    i.public_key.toLocaleUpperCase().indexOf(q) !== -1 ||
     (i.round_id != null && i.round_id.toString().indexOf(q) !== -1)
   ) {
     return true

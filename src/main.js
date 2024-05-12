@@ -27,6 +27,7 @@ import '@/assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { createVInlineFields } from '@wdns/vuetify-inline-fields';
 
 // ------------ fontawesome --------------
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -36,6 +37,8 @@ import {
   faCalculator,
   faEye,
   faEyeSlash,
+  faForward,
+  faForwardFast,
   faHand,
   faPen,
   faPlay,
@@ -46,12 +49,11 @@ import {
   faXmark
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faCalculator, faEye, faEyeSlash, faHand, faPen, faPlay, faPlus, faQuestion, faTrashCan, faUserPlus, faXmark)
+library.add(faCalculator, faEye, faEyeSlash, faForward, faForwardFast, faHand, faPen, faPlay, faPlus, faQuestion, faTrashCan, faUserPlus, faXmark)
 
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import VuetifyUseDialog from 'vuetify-use-dialog'
-//import { aliases, fa } from 'vuetify/iconsets/fa'
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 
 import App from '@/App.vue'
@@ -67,11 +69,15 @@ const vuetify = createVuetify({
     defaultSet: 'mdi',
     aliases,
     sets: {
-      mdi
-      //      fa,
+      mdi,
+    //  fa,
     }
   }
 })
+
+const VInlineFields = createVInlineFields({
+  saveIcon: 'mdi:1mdi-minus'
+});
 
 const app = createApp(App)
   .component('font-awesome-icon', FontAwesomeIcon)
@@ -79,6 +85,7 @@ const app = createApp(App)
   .use(router)
   .use(vuetify)
   .use(VuetifyUseDialog)
+  .use(VInlineFields)
 
 const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
