@@ -27,7 +27,6 @@ import '@/assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { createVInlineFields } from '@wdns/vuetify-inline-fields';
 
 // ------------ fontawesome --------------
 import { library } from '@fortawesome/fontawesome-svg-core'
