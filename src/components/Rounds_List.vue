@@ -48,7 +48,8 @@ const headers = [
   { title: 'Id', align: 'center', key: 'id', sortable: true },
   { title: 'Status', align: 'center', key: 'status.name', sortable: true },
   { title: 'Result', align: 'center', key: 'result', sortable: false },
-  { title: 'Participants', align: 'center', key: 'nodeCount', sortable: true },
+  { title: 'Max. nodes', align: 'center', key: 'maxNodes', sortable: false },
+  { title: 'Nodes', align: 'center', key: 'nodeCount', sortable: true },
   { title: 'Running', align: 'center', key: 'nodeCountRunning', sortable: true },
   { title: 'Failed', align: 'center', key: 'nodeCountFailed', sortable: true },
   { title: 'Finished', align: 'center', key: 'nodeCountFinished', sortable: true },
@@ -74,8 +75,7 @@ function filterRounds(value, query, item) {
     i.id.toString().indexOf(q) !== -1 ||
     (i.result != null && i.result.toString().indexOf(q) !== -1) ||
     i.status.name.toLocaleUpperCase().indexOf(q) !== -1 ||
-    formatDate(i.createdOn).toLocaleUpperCase().indexOf(q) !== -1 ||
-    formatDate(i.modifiedOn).toLocaleUpperCase().indexOf(q) !== -1
+    formatDate(i.createdOn).toLocaleUpperCase().indexOf(q) !== -1
   ) {
     return true
   }
@@ -101,8 +101,30 @@ function formatResult(result) {
   return formatted;
 }
 
-async function newRound() {
-  roundsStore.add()
+function formatRunningData(item) {
+  const tt =
+    item['nodeCountStepOne'] +
+    item['nodeCountWStepTwo'] +
+    item['nodeCountStepTwo'] +
+    item['nodeCountWStepThree'] +
+    item['nodeCountStepThree']
+
+  let str = '0'
+  if (tt > 0)
+    str = tt.toString() + '  [ ' +
+      '' + item['nodeCountStepOne'].toString() + '⇒' +
+      '' + item['nodeCountWStepTwo'].toString() + '⇒' +
+      '' + item['nodeCountStepTwo'].toString() + '⇒' +
+      '' + item['nodeCountWStepThree'].toString() + '⇒' +
+      '' + item['nodeCountStepThree'].toString() + ']'
+  return str;
+}
+
+async function newRound(maxNodes) {
+  const roundSettings = {
+    maxNodes: maxNodes
+  }
+  roundsStore.add(roundSettings)
   .then(() => {
         updateDataGrid()
       })
@@ -188,6 +210,15 @@ onUnmounted(() => {
   }
 })
 
+function showProceed(item) {
+  return (item['isVersatile']  && parseInt(item['nodeCount']) >= 3) ||
+          item['statusValue'] == 0
+}
+
+function showCancel(item) {
+  return (item['isVersatile']  && item['statusValue'] != 0)
+}
+
 </script>
 
 <template>
@@ -196,11 +227,15 @@ onUnmounted(() => {
     <hr class="hr" />
 
     <div class="link-crt">
-      <a class="link" @click="newRound">
+      <a class="link" @click="newRound(authStore.max_nodes)">
         <font-awesome-icon size="1x" icon="fa-solid fa-plus" class="link" />
         New round
       </a>
-      </div>
+      <span class="link-ext">
+        <span>&nbsp;with a maximum participation:&nbsp;</span>
+        <input id="maxNodes" type="number" v-model.number="authStore.max_nodes" min="3" class="link-input">
+      </span>
+    </div>
 
     <v-card>
       <v-data-table
@@ -222,27 +257,27 @@ onUnmounted(() => {
             {{ formatResult(item['result']) }}
         </template>
 
+        <template v-slot:[`item.nodeCountRunning`]="{ item }">
+          {{ formatRunningData(item) }}
+        </template>
+
         <template v-slot:[`item.createdOn`]="{ item }">
           {{ formatDate(item['createdOn']) }}
         </template>
 
-        <template v-slot:[`item.modifiedOn`]="{ item }">
-          {{ formatDate(item['modifiedOn']) }}
-        </template>
-
         <template v-slot:[`item.actionNext`]="{ item }">
-          <button @click="nextRoundStep(item['id'])" class="anti-btn" v-if="item['isVersatile']">
+          <button @click="nextRoundStep(item['id'])" class="anti-btn" v-if="showProceed(item)">
             <font-awesome-icon size="1x" :icon= "'fa-solid ' + item['nextStatus'].actionIcon" class="anti-btn" />
           </button>
-          <v-tooltip v-if="item['isVersatile']"
+            <v-tooltip v-if="showProceed(item)"
             activator="parent"
           >{{ item['nextStatus'].actionName }}</v-tooltip>
         </template>
 
         <template v-slot:[`item.actionCancel`]="{ item }">
-          <button @click="cancelRound(item['id'])" class="anti-btn" v-if="item['isVersatile']">
+          <button @click="cancelRound(item['id'])" class="anti-btn" v-if="showCancel(item)">
             <font-awesome-icon size="1x" :icon= "'fa-solid ' + item['cancelStatus'].actionIcon" class="anti-btn" />
-            <v-tooltip v-if="item['isVersatile']"
+            <v-tooltip v-if="showCancel(item)"
               activator="parent"
             >{{ item['cancelStatus'].actionName }}</v-tooltip>
           </button>

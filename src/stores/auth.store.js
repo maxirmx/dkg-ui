@@ -47,6 +47,7 @@ export const useAuthStore = defineStore({
     rounds_search: '',
     rounds_sort_by: ['id'],
     rounds_page: 1,
+    max_nodes: 256,
     returnUrl: null,
     re_jwt: null,
     re_tgt: null

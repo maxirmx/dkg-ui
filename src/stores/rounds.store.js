@@ -37,8 +37,8 @@ export const useRoundsStore = defineStore({
     round: {}
   }),
   actions: {
-    async add(round) {
-      await fetchWrapper.post(`${baseUrl}/add`, round)
+    async add(roundSettings) {
+      await fetchWrapper.post(`${baseUrl}/add`, roundSettings)
     },
     async getAll() {
       this.rounds = { loading: true }
