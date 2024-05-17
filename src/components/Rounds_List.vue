@@ -49,6 +49,7 @@ const headers = [
   { title: 'Status', align: 'center', key: 'status.name', sortable: true },
   { title: 'Result', align: 'center', key: 'result', sortable: false },
   { title: 'Max. nodes', align: 'center', key: 'maxNodes', sortable: false },
+  { title: 'Timeout (s)', align: 'center', key: 'timeout', sortable: false },
   { title: 'Nodes', align: 'center', key: 'nodeCount', sortable: true },
   { title: 'Running', align: 'center', key: 'nodeCountRunning', sortable: true },
   { title: 'Failed', align: 'center', key: 'nodeCountFailed', sortable: true },
@@ -120,9 +121,10 @@ function formatRunningData(item) {
   return str;
 }
 
-async function newRound(maxNodes) {
+async function newRound(maxNodes, timeout) {
   const roundSettings = {
-    maxNodes: maxNodes
+    maxNodes: maxNodes,
+    timeout: timeout
   }
   roundsStore.add(roundSettings)
   .then(() => {
@@ -227,13 +229,15 @@ function showCancel(item) {
     <hr class="hr" />
 
     <div class="link-crt">
-      <a class="link" @click="newRound(authStore.max_nodes)">
+      <a class="link" @click="newRound(authStore.max_nodes, authStore.timeout)">
         <font-awesome-icon size="1x" icon="fa-solid fa-plus" class="link" />
         New round
       </a>
       <span class="link-ext">
-        <span>&nbsp;with a maximum participation:&nbsp;</span>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;maximum nodes:&nbsp;</span>
         <input id="maxNodes" type="number" v-model.number="authStore.max_nodes" min="3" class="link-input">
+        <span>&nbsp;timeout (seconds):&nbsp;</span>
+        <input id="timeout" type="number" v-model.number="authStore.timeout" min="3" class="link-input">
       </span>
     </div>
 
