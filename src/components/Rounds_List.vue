@@ -123,7 +123,7 @@ function formatRunningData(item) {
   return str;
 }
 
-function formatAbsentData(item) {
+function formatLostData(item) {
   let str = '0'
   if (!item['isVersatile']) {
     const tt =
