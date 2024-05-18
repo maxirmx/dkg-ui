@@ -17,4 +17,4 @@ COPY config/.htaccess /var/www/dkg
 EXPOSE 80
 EXPOSE 443
 
-CMD /bin/bash -c "envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+CMD envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'
