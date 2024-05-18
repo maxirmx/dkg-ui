@@ -23,8 +23,13 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-//export const apiUrl = 'https://localhost:8081/api'
-//import { env } from 'dotenv'
+let apiUrl;
 
-export const apiUrl = `https://${import.meta.env.VITE_API_HOST}:8081/api`
+if (import.meta.env.MODE === 'production') {
+  apiUrl = `https://${window.location.hostname}:8081/api`;
+} else {
+  apiUrl = `https://${import.meta.env.VITE_API_HOST}:8081/api`;
+}
+
+export { apiUrl };
 export const enableLog = true

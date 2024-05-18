@@ -54,7 +54,8 @@ const headers = [
   { title: 'Running', align: 'center', key: 'nodeCountRunning', sortable: true },
   { title: 'Failed', align: 'center', key: 'nodeCountFailed', sortable: true },
   { title: 'Finished', align: 'center', key: 'nodeCountFinished', sortable: true },
-  { title: 'Created', align: 'center', key: 'createdOn', sortable: true },
+  { title: 'Absent', align: 'center', key: 'nodeCountAbsent', sortable: true },
+ { title: 'Created', align: 'center', key: 'createdOn', sortable: true },
 //  { title: 'Modified', align: 'center', key: 'modifiedOn', sortable: true },
   { title: '', align: 'center', key: 'actionNext', sortable: false, width: '5%' },
   { title: '', align: 'center', key: 'actionCancel', sortable: false, width: '5%' }
@@ -103,21 +104,37 @@ function formatResult(result) {
 }
 
 function formatRunningData(item) {
-  const tt =
+  let str = '0'
+  if (item['isVersatile']) {
+    const tt =
     item['nodeCountStepOne'] +
     item['nodeCountWStepTwo'] +
     item['nodeCountStepTwo'] +
     item['nodeCountWStepThree'] +
     item['nodeCountStepThree']
+    if (tt > 0)
+      str = tt.toString() + '  [ ' +
+        '' + item['nodeCountStepOne'].toString() + '⇒' +
+        '' + item['nodeCountWStepTwo'].toString() + '⇒' +
+        '' + item['nodeCountStepTwo'].toString() + '⇒' +
+        '' + item['nodeCountWStepThree'].toString() + '⇒' +
+        '' + item['nodeCountStepThree'].toString() + ']'
+  }
+  return str;
+}
 
+function formatAbsentData(item) {
   let str = '0'
-  if (tt > 0)
-    str = tt.toString() + '  [ ' +
-      '' + item['nodeCountStepOne'].toString() + '⇒' +
-      '' + item['nodeCountWStepTwo'].toString() + '⇒' +
-      '' + item['nodeCountStepTwo'].toString() + '⇒' +
-      '' + item['nodeCountWStepThree'].toString() + '⇒' +
-      '' + item['nodeCountStepThree'].toString() + ']'
+  if (!item['isVersatile']) {
+    const tt =
+    item['nodeCountStepOne'] +
+    item['nodeCountWStepTwo'] +
+    item['nodeCountStepTwo'] +
+    item['nodeCountWStepThree'] +
+    item['nodeCountStepThree']
+    if (tt > 0)
+      str = tt.toString()
+  }
   return str;
 }
 
@@ -218,7 +235,7 @@ function showProceed(item) {
 }
 
 function showCancel(item) {
-  return (item['isVersatile']  && item['statusValue'] != 0)
+  return (item['isVersatile'] )
 }
 
 </script>
@@ -263,6 +280,10 @@ function showCancel(item) {
 
         <template v-slot:[`item.nodeCountRunning`]="{ item }">
           {{ formatRunningData(item) }}
+        </template>
+
+        <template v-slot:[`item.nodeCountAbsent`]="{ item }">
+          {{ formatAbsentData(item) }}
         </template>
 
         <template v-slot:[`item.createdOn`]="{ item }">

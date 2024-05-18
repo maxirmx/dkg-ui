@@ -1,6 +1,6 @@
 {
   "name": "dkg-frontend",
-  "version": "0.6.2",
+  "version": "0.6.4",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -8,8 +8,7 @@
     "preview": "vite preview",
     "test:unit": "vitest",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "format": "prettier --write src/",
-    "deploy": "scp -rp dist/* root@dkg.samsonov.net:/var/www/dkg"
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.0",
