@@ -41,7 +41,6 @@ jobs:
         files: 'dkg-frontend-${{ env.TAG_NAME }}.tar.gz'
         prerelease: ${{ contains(github.ref, '.rc') && 'true' || 'false' }}
 
-jobs:
   release-dkg-frontend:
     runs-on: ubuntu-latest
     permissions:
