@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  release:
-    name: Release
+  release-package:
+    name: Release package
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -41,7 +41,8 @@ jobs:
         files: 'dkg-frontend-${{ env.TAG_NAME }}.tar.gz'
         prerelease: ${{ contains(github.ref, '.rc') && 'true' || 'false' }}
 
-  release-dkg-frontend:
+  release-docker-image:
+    name: Release docker image
     runs-on: ubuntu-latest
     permissions:
       contents: read

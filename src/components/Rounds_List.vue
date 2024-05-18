@@ -54,7 +54,7 @@ const headers = [
   { title: 'Running', align: 'center', key: 'nodeCountRunning', sortable: true },
   { title: 'Failed', align: 'center', key: 'nodeCountFailed', sortable: true },
   { title: 'Finished', align: 'center', key: 'nodeCountFinished', sortable: true },
-  { title: 'Absent', align: 'center', key: 'nodeCountAbsent', sortable: true },
+  { title: 'Lost', align: 'center', key: 'nodeCountLost', sortable: true },
  { title: 'Created', align: 'center', key: 'createdOn', sortable: true },
 //  { title: 'Modified', align: 'center', key: 'modifiedOn', sortable: true },
   { title: '', align: 'center', key: 'actionNext', sortable: false, width: '5%' },
@@ -282,8 +282,8 @@ function showCancel(item) {
           {{ formatRunningData(item) }}
         </template>
 
-        <template v-slot:[`item.nodeCountAbsent`]="{ item }">
-          {{ formatAbsentData(item) }}
+        <template v-slot:[`item.nodeCountLost`]="{ item }">
+          {{ formatLostData(item) }}
         </template>
 
         <template v-slot:[`item.createdOn`]="{ item }">
