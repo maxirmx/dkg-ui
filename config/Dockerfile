@@ -11,10 +11,10 @@ FROM nginx as production-stage
 COPY --from=build-stage /app/dist /var/www/dkg
 
 # Copy the Nginx configuration file
-COPY config/nginx.docker.conf /etc/nginx/conf.d/default.conf.template
+COPY config/nginx.docker.conf /etc/nginx/conf.d/default.conf
 COPY config/.htaccess /var/www/dkg
 
 EXPOSE 80
 EXPOSE 443
 
-CMD envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'
+CMD ["nginx", "-g", "daemon off;"]
