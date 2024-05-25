@@ -49,10 +49,11 @@ const headers = [
   { title: 'Status', align: 'center', key: 'status.name', sortable: true },
   { title: 'Result', align: 'center', key: 'result', sortable: false },
   { title: 'Max. nodes', align: 'center', key: 'maxNodes', sortable: false },
-  { title: 'Timeout (s)', align: 'center', key: 'timeout', sortable: false },
+  { title: 'Timeouts (s)', align: 'center', key: 'timeouts', sortable: false },
   { title: 'Nodes', align: 'center', key: 'nodeCount', sortable: true },
   { title: 'Running', align: 'center', key: 'nodeCountRunning', sortable: true },
   { title: 'Failed', align: 'center', key: 'nodeCountFailed', sortable: true },
+  { title: 'Timed Out', align: 'center', key: 'nodeCountTimedOut', sortable: true },
   { title: 'Finished', align: 'center', key: 'nodeCountFinished', sortable: true },
   { title: 'Lost', align: 'center', key: 'nodeCountLost', sortable: true },
  { title: 'Created', align: 'center', key: 'createdOn', sortable: true },
@@ -135,13 +136,23 @@ function formatLostData(item) {
     if (tt > 0)
       str = tt.toString()
   }
-  return str;
+  return str
 }
 
-async function newRound(maxNodes, timeout) {
+function formatTimeouts(item) {
+  console.log(item)
+  let tt = item['timeout2'].toString()
+  tt = tt + '/' +  item['timeout3'].toString()
+  tt = tt + '/' +  item['timeoutR'].toString()
+  return tt 
+}
+
+async function newRound(maxNodes, timeout2, timeout3, timeoutR) {
   const roundSettings = {
     maxNodes: maxNodes,
-    timeout: timeout
+    timeout2: timeout2,
+    timeout3: timeout3,
+    timeoutR: timeoutR
   }
   roundsStore.add(roundSettings)
   .then(() => {
@@ -246,15 +257,20 @@ function showCancel(item) {
     <hr class="hr" />
 
     <div class="link-crt">
-      <a class="link" @click="newRound(authStore.max_nodes, authStore.timeout)">
+      <a class="link" @click="newRound(authStore.max_nodes, authStore.timeout2, authStore.timeout3, authStore.timeoutR)">
         <font-awesome-icon size="1x" icon="fa-solid fa-plus" class="link" />
         New round
       </a>
       <span class="link-ext">
         <span>&nbsp;&nbsp;&nbsp;&nbsp;maximum nodes:&nbsp;</span>
         <input id="maxNodes" type="number" v-model.number="authStore.max_nodes" min="3" class="link-input">
-        <span>&nbsp;timeout (seconds):&nbsp;</span>
-        <input id="timeout" type="number" v-model.number="authStore.timeout" min="3" class="link-input">
+        <span>&nbsp;Generation timeouts (seconds)</span>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deals:&nbsp;</span>
+        <input id="timeout2" type="number" v-model.number="authStore.timeout2" min="3" class="link-input">
+        <span>&nbsp;responses:&nbsp;</span>
+        <input id="timeout3" type="number" v-model.number="authStore.timeout3" min="3" class="link-input">
+        <span>&nbsp;shares:&nbsp;</span>
+        <input id="timeoutR" type="number" v-model.number="authStore.timeoutR" min="3" class="link-input">
       </span>
     </div>
 
@@ -274,6 +290,10 @@ function showCancel(item) {
         item-value="id"
         class="elevation-1"
       >
+        <template v-slot:[`item.timeouts`]="{ item }">
+            {{ formatTimeouts(item) }}
+        </template>
+
         <template v-slot:[`item.result`]="{ item }">
             {{ formatResult(item['result']) }}
         </template>
