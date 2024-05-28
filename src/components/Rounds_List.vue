@@ -53,7 +53,7 @@ const headers = [
   { title: 'Nodes', align: 'center', key: 'nodeCount', sortable: true },
   { title: 'Running', align: 'center', key: 'nodeCountRunning', sortable: true },
   { title: 'Failed', align: 'center', key: 'nodeCountFailed', sortable: true },
-//  { title: 'Timed Out', align: 'center', key: 'nodeCountTimedOut', sortable: true },
+  { title: 'Timed Out', align: 'center', key: 'nodeCountTimedOut', sortable: true },
   { title: 'Finished', align: 'center', key: 'nodeCountFinished', sortable: true },
   { title: 'Lost', align: 'center', key: 'nodeCountLost', sortable: true },
  { title: 'Created', align: 'center', key: 'createdOn', sortable: true },
@@ -144,7 +144,7 @@ function formatTimeouts(item) {
   let tt = item['timeout2'].toString()
   tt = tt + '/' +  item['timeout3'].toString()
   tt = tt + '/' +  item['timeoutR'].toString()
-  return tt 
+  return tt
 }
 
 async function newRound(maxNodes, timeout2, timeout3, timeoutR) {
