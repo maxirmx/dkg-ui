@@ -49,7 +49,7 @@ const confirm = useConfirm()
 const headers = [
   { title: 'Id', align: 'center', key: 'id', sortable: true },
   { title: 'Name', align: 'center', key: 'name', sortable: true },
-  { title: 'GUID', align: 'center', key: 'GUID', sortable: true },
+  { title: 'Address', align: 'center', key: 'address', sortable: true },
   { title: 'Round', align: 'center', key: 'roundId', sortable: true },
   { title: 'Status', align: 'center', key: 'status.name', sortable: true },
   { title: '', align: 'center', key: 'actions1', sortable: false, width: '5%' }
