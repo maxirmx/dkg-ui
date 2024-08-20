@@ -51,7 +51,6 @@ export const useNodesStore = defineStore({
         sortDesc,
         search,
       };
-      console.log(request);
       try {
         const response = await fetchWrapper.post(`${baseUrl}/fetch`, request)
         this.nodesF = response.nodesFrame

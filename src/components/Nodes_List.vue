@@ -41,28 +41,52 @@ const { alert } = storeToRefs(alertStore)
 const authStore = useAuthStore()
 
 const nodesStore = useNodesStore()
-//const { nodesF, totalNodes } = storeToRefs(nodesStore)
-//nodesStore.getAll()
+
+let isUpdating = false
+
+const updatePeriodically = async () => {
+  if (isUpdating) {
+    return;
+  }
+
+  isUpdating = true
+
+  try {
+    await nodesStore.fetchFrame({
+      page: authStore.nodesPage,
+      itemsPerPage: nodesStore.nodesPerPage,
+      sortBy: nodesStore.nodesSortBy,
+      search: nodesStore.nodesSearch,
+    });
+
+  }
+  catch (error) {
+  }
+  finally {
+    isUpdating = false;
+  }
+};
 
 watch(
       () => [
-        authStore.nodes_page,
+        nodesStore.nodesPage,
         nodesStore.nodesPerPage,
         nodesStore.nodesSortBy,
         nodesStore.nodesSearch,
       ],
-      () => {
-        nodesStore.fetchFrame({
-          page: authStore.nodes_page,
-          itemsPerPage: nodesStore.nodesPerPage,
-          sortBy: nodesStore.nodesSortBy,
-          sortDesc: false, // Adjust as needed
-          search: nodesStore.nodesSearch,
-        });
-      },
+      () => { updatePeriodically(); },
       { immediate: true }
     );
 
+let intervalId = null
+
+onMounted(() => {
+  intervalId = setInterval(updatePeriodically, 1000);
+});
+
+onUnmounted(() => {
+  clearInterval(intervalId);
+});
 
 
 import { useConfirm } from 'vuetify-use-dialog'
@@ -107,14 +131,6 @@ async function resetNode(item) {
   }
 }
 
-//async function fetchNodes(options) {
-//  await nodesStore.fetchFrame(options)
-
-//  nodes.value = data.items;
-//  totalNodes.value = data.total;
-//}
-
-
 function formatRound(roundId) {
   if (roundId == null) {
     return '--'
@@ -122,64 +138,6 @@ function formatRound(roundId) {
   return roundId.toString()
 }
 
-let isUpdating = false
-
-const updateDataGrid = async () => {
-  if (isUpdating) {
-    return
-  }
-
-  isUpdating = true
-  try {
-    await nodesStore.getAllU()
-    if (!nodesU?.loading && !nodesU?.loading)
-    {
-      const oldData = [...nodes.value]
-      const newItems = []
-
-      for (const newItem of nodesU.value) {
-        const oldItem = nodes.value.find(item => item.id === newItem.id)
-        if (oldItem) {
-          if (JSON.stringify(oldItem) !== JSON.stringify(newItem)) {
-            Object.assign(oldItem, newItem)
-          }
-        }
-        else {
-          newItems.push(newItem)
-        }
-      }
-      nodes.value.unshift(...newItems)
-
-      for (const oldItem of oldData) {
-        const newItem = nodesU.value.find(item => item.id === oldItem.id)
-        if (!newItem) {
-          const index = nodes.value.indexOf(oldItem)
-          nodes.value.splice(index, 1)
-        }
-      }
-    }
-  }
-  catch {
-    alertStore.error('Failed to update nodes list')
-  }
-  finally {
-    isUpdating = false
-  }
-}
-
-let intervalId = null
-
-//onMounted(() => {
-//  intervalId = setInterval(() => {
-//    updateDataGrid()
-//  }, 10000)
-//})
-
-//onUnmounted(() => {
-//  if (intervalId) {
-//    clearInterval(intervalId)
-//  }
-//})
 
 </script>
 
@@ -193,7 +151,7 @@ let intervalId = null
         v-model:items-per-page="nodesStore.nodesPerPage"
         items-per-page-text="Nodes per page"
         page-text="{0}-{1} of {2}"
-        :page="authStore.nodes_page"
+        :page="nodesStore.nodesPage"
         :items-per-page-options="itemsPerPageOptions"
         :headers="headers"
         :items="nodesStore.nodesF"
@@ -218,7 +176,7 @@ let intervalId = null
       </v-data-table-server>
       <v-spacer></v-spacer>
       <div v-if="!nodesStore.nodesF?.length" class="text-center m-5">No nodes</div>
-      <div v-if="nodesStore.nodesF?.length">
+      <div v-if="nodesStore.totalNodes">
         <v-text-field
           v-model="nodesStore.nodesSearch"
           :append-inner-icon="mdiMagnify"
