@@ -28,7 +28,7 @@ let apiUrl;
 if (import.meta.env.MODE === 'production') {
   apiUrl = `https://${window.location.hostname}:8081/api`;
 } else {
-  apiUrl = `https://${import.meta.env.VITE_API_HOST}:8081/api`;
+  apiUrl = `http://${import.meta.env.VITE_API_HOST}:8080/api`;
 }
 
 export { apiUrl };

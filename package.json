@@ -1,6 +1,6 @@
 {
   "name": "dkg-frontend",
-  "version": "0.6.12",
+  "version": "0.7.0",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -22,7 +22,7 @@
     "vite-plugin-vuetify": "^1.0.2",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2",
-    "vuetify": "^3.3.9",
+    "vuetify": "^3.7.0",
     "vuetify-use-dialog": "^0.6.2",
     "yup": "^1.2.0"
   },

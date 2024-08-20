@@ -33,10 +33,33 @@ export const useNodesStore = defineStore({
   id: 'nodes',
   state: () => ({
     nodes: {},
+    nodesF: [ ],
     nodesU: {},
-    node: {}
+    node: {},
+    totalNodes: 0,
+    nodesPerPage: 10,
+    nodesSearch: '',
+    nodesSortBy: [ { key: 'id', order: 'desc' } ],
+    nodesPage: 1,
   }),
   actions: {
+   async fetchFrame({ page, itemsPerPage, sortBy, sortDesc, search }) {
+      const request = {
+        page,
+        itemsPerPage,
+        sortBy,
+        sortDesc,
+        search,
+      };
+      console.log(request);
+      try {
+        const response = await fetchWrapper.post(`${baseUrl}/fetch`, request)
+        this.nodesF = response.nodesFrame
+        this.totalNodes = response.totalNodes
+        } catch (error) {
+        this.nodesF = { error }
+      }
+    },
     async getAll() {
       this.nodes = { loading: true }
       try {
