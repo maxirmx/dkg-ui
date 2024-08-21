@@ -25,6 +25,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 import { onMounted, onUnmounted } from 'vue'
+import { watch } from 'vue'
 
 import { storeToRefs } from 'pinia'
 import { useNodesStore } from '@/stores/nodes.store.js'
@@ -40,8 +41,54 @@ const { alert } = storeToRefs(alertStore)
 const authStore = useAuthStore()
 
 const nodesStore = useNodesStore()
-const { nodes, nodesU } = storeToRefs(nodesStore)
-nodesStore.getAll()
+
+let isUpdating = false
+
+const updatePeriodically = async () => {
+  if (isUpdating) {
+    return;
+  }
+
+  isUpdating = true
+
+  try {
+    await nodesStore.fetchFrame({
+      page: authStore.nodesPage,
+      itemsPerPage: nodesStore.nodesPerPage,
+      sortBy: nodesStore.nodesSortBy,
+      search: nodesStore.nodesSearch,
+    });
+
+  }
+  catch (error) {
+     alertStore.error('Fatal error when updating node list: ' + error.message)
+  }
+  finally {
+    isUpdating = false;
+  }
+};
+
+watch(
+      () => [
+        nodesStore.nodesPage,
+        nodesStore.nodesPerPage,
+        nodesStore.nodesSortBy,
+        nodesStore.nodesSearch,
+      ],
+      () => { updatePeriodically(); },
+      { immediate: true }
+    );
+
+let intervalId = null
+
+onMounted(() => {
+  intervalId = setInterval(updatePeriodically, 5000);
+});
+
+onUnmounted(() => {
+  clearInterval(intervalId);
+});
+
 
 import { useConfirm } from 'vuetify-use-dialog'
 const confirm = useConfirm()
@@ -77,37 +124,12 @@ async function resetNode(item) {
     nodesStore
       .reset(item.id)
       .then(() => {
-        updateDataGrid()
+       updatePeriodically()
       })
       .catch((error) => {
         alertStore.error(error)
       })
   }
-}
-
-
-function filterNodes(value, query, item) {
-  if (query == null || item == null) {
-    return false
-  }
-
-  const i = item.raw
-  if (i == null) {
-    return false
-  }
-
-  const q = query.toLocaleUpperCase()
-
-  if (
-    i.id.toString().indexOf(q) !== -1 ||
-    i.name.toLocaleUpperCase().indexOf(q) !== -1 ||
-    i.public_key.toLocaleUpperCase().indexOf(q) !== -1 ||
-    (i.round_id != null && i.round_id.toString().indexOf(q) !== -1)
-  ) {
-    return true
-  }
-
-  return false
 }
 
 function formatRound(roundId) {
@@ -117,64 +139,6 @@ function formatRound(roundId) {
   return roundId.toString()
 }
 
-let isUpdating = false
-
-const updateDataGrid = async () => {
-  if (isUpdating) {
-    return
-  }
-
-  isUpdating = true
-  try {
-    await nodesStore.getAllU()
-    if (!nodesU?.loading && !nodesU?.loading)
-    {
-      const oldData = [...nodes.value]
-      const newItems = []
-
-      for (const newItem of nodesU.value) {
-        const oldItem = nodes.value.find(item => item.id === newItem.id)
-        if (oldItem) {
-          if (JSON.stringify(oldItem) !== JSON.stringify(newItem)) {
-            Object.assign(oldItem, newItem)
-          }
-        }
-        else {
-          newItems.push(newItem)
-        }
-      }
-      nodes.value.unshift(...newItems)
-
-      for (const oldItem of oldData) {
-        const newItem = nodesU.value.find(item => item.id === oldItem.id)
-        if (!newItem) {
-          const index = nodes.value.indexOf(oldItem)
-          nodes.value.splice(index, 1)
-        }
-      }
-    }
-  }
-  catch {
-    alertStore.error('Failed to update nodes list')
-  }
-  finally {
-    isUpdating = false
-  }
-}
-
-let intervalId = null
-
-onMounted(() => {
-  intervalId = setInterval(() => {
-    updateDataGrid()
-  }, 10000)
-})
-
-onUnmounted(() => {
-  if (intervalId) {
-    clearInterval(intervalId)
-  }
-})
 
 </script>
 
@@ -184,20 +148,20 @@ onUnmounted(() => {
     <hr class="hr" />
 
     <v-card>
-      <v-data-table
-        v-if="nodes?.length"
-        v-model:items-per-page="authStore.nodes_per_page"
+      <v-data-table-server
+        v-model:items-per-page="nodesStore.nodesPerPage"
         items-per-page-text="Nodes per page"
         page-text="{0}-{1} of {2}"
-        v-model:page="authStore.nodes_page"
+        :page="nodesStore.nodesPage"
         :items-per-page-options="itemsPerPageOptions"
         :headers="headers"
-        :items="nodes"
-        :search="authStore.nodes_search"
-        v-model:sort-by="authStore.nodes_sort_by"
-        :custom-filter="filterNodes"
+        :items="nodesStore.nodesF"
+        :itemsLength="nodesStore.totalNodes"
+        :search="nodesStore.nodesSearch"
+        v-model:sort-by="nodesStore.nodesSortBy"
         item-value="id"
         class="elevation-1"
+        @update:options="nodesStore.fetchNodes"
       >
       <template v-slot:[`item.roundId`]="{ item }">
         {{ formatRound(item['roundId']) }}
@@ -210,12 +174,12 @@ onUnmounted(() => {
           <v-tooltip activator="parent">Reset</v-tooltip>
 
         </template>
-      </v-data-table>
+      </v-data-table-server>
       <v-spacer></v-spacer>
-      <div v-if="!nodes?.length" class="text-center m-5">No nodes</div>
-      <div v-if="nodes?.length">
+      <div v-if="!nodesStore.nodesF?.length" class="text-center m-5">No nodes</div>
+      <div v-if="nodesStore.totalNodes">
         <v-text-field
-          v-model="authStore.nodes_search"
+          v-model="nodesStore.nodesSearch"
           :append-inner-icon="mdiMagnify"
           label="Search any node information"
           variant="solo"
@@ -223,10 +187,10 @@ onUnmounted(() => {
         />
       </div>
     </v-card>
-    <div v-if="nodes?.error" class="text-center m-5">
-      <div class="text-danger">Failed to load nodes list: {{ nodes.error }}</div>
+    <div v-if="nodesStore.nodesF?.error" class="text-center m-5">
+      <div class="text-danger">Failed to load nodes list: {{ nodesF.error }}</div>
     </div>
-    <div v-if="nodes?.loading" class="text-center m-5">
+    <div v-if="nodesStore.nodesF?.loading" class="text-center m-5">
       <span class="spinner-border spinner-border-lg align-center"></span>
     </div>
     <div v-if="alert" class="alert alert-dismissable mt-3 mb-0" :class="alert.type">

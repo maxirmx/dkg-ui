@@ -1,15 +1,16 @@
-// Copyright (C) 2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
+<script setup>
+// Copyright (C) 2023-2024 Maxim [maxirmx] Samsonov  (www.sw.consulting)
 // All rights reserved.
-// This file is a part of dkg applcation
+// This file is a part of Dkg Frontend applcation
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions
 // are met:
 // 1. Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
+// notice, this list of conditions and the following disclaimer.
 // 2. Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the
-//    documentation and/or other materials provided with the distribution.
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 // ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
@@ -23,25 +24,9 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-import { defineStore } from 'pinia'
-import { fetchWrapper } from '@/helpers/fetch.wrapper.js'
-import { apiUrl } from '@/helpers/config.js'
+import Statistics from '@/components/Statistics_List.vue'
+</script>
 
-const baseUrl = `${apiUrl}/versions`
-
-export const useVersionsStore = defineStore({
-  id: 'versions',
-  state: () => ({
-    currentVersion: { }
-  }),
-  actions: {
-    async getCurrent() {
-      this.currentVersion = { loading: true }
-      try {
-        this.currentVersion = await fetchWrapper.get(`${baseUrl}/current`)
-      } catch (error) {
-        this.currentVersion = { error }
-      }
-    }
-  }
-})
+<template>
+  <Statistics />
+</template>

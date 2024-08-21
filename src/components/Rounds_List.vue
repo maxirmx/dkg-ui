@@ -193,7 +193,7 @@ const updateDataGrid = async () => {
   isUpdating = true
   try {
     await roundsStore.getAllU()
-    if (!roundsU?.loading && !roundsU?.loading)
+    if (!roundsU?.loading && !roundsU?.error)
     {
       const oldData = [...rounds.value]
       const newItems = []

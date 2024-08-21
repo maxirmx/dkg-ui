@@ -29,14 +29,40 @@ import { apiUrl } from '@/helpers/config.js'
 
 const baseUrl = `${apiUrl}/nodes`
 
+import { useAlertStore } from '@/stores/alert.store.js'
+const alertStore = useAlertStore()
+
 export const useNodesStore = defineStore({
   id: 'nodes',
   state: () => ({
     nodes: {},
+    nodesF: [ ],
     nodesU: {},
-    node: {}
+    node: {},
+    totalNodes: 0,
+    nodesPerPage: 10,
+    nodesSearch: '',
+    nodesSortBy: [ { key: 'id', order: 'desc' } ],
+    nodesPage: 1,
   }),
   actions: {
+   async fetchFrame({ page, itemsPerPage, sortBy, sortDesc, search }) {
+      const request = {
+        page,
+        itemsPerPage,
+        sortBy,
+        sortDesc,
+        search,
+      };
+      try {
+        const response = await fetchWrapper.post(`${baseUrl}/fetch`, request)
+        this.nodesF = response.nodesFrame
+        this.totalNodes = response.totalNodes
+        } catch (error) {
+          this.nodesF = [ ]
+          alertStore.error('Fatal error when updating node list: ' + error.message)
+         }
+    },
     async getAll() {
       this.nodes = { loading: true }
       try {
