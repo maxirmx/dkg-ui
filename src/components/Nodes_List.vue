@@ -61,6 +61,7 @@ const updatePeriodically = async () => {
 
   }
   catch (error) {
+     alertStore.error('Fatal error when updating node list: ' + error.message)
   }
   finally {
     isUpdating = false;
@@ -81,7 +82,7 @@ watch(
 let intervalId = null
 
 onMounted(() => {
-  intervalId = setInterval(updatePeriodically, 1000);
+  intervalId = setInterval(updatePeriodically, 5000);
 });
 
 onUnmounted(() => {
@@ -123,7 +124,7 @@ async function resetNode(item) {
     nodesStore
       .reset(item.id)
       .then(() => {
-        updateDataGrid()
+       updatePeriodically()
       })
       .catch((error) => {
         alertStore.error(error)
@@ -187,7 +188,7 @@ function formatRound(roundId) {
       </div>
     </v-card>
     <div v-if="nodesStore.nodesF?.error" class="text-center m-5">
-      <div class="text-danger">Failed to load nodes list: {{ nodes.error }}</div>
+      <div class="text-danger">Failed to load nodes list: {{ nodesF.error }}</div>
     </div>
     <div v-if="nodesStore.nodesF?.loading" class="text-center m-5">
       <span class="spinner-border spinner-border-lg align-center"></span>

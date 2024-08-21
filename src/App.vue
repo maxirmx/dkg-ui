@@ -79,6 +79,9 @@ function getUserName() {
         <v-list-item>
           <RouterLink to="/nodes" class="link">Nodes</RouterLink>
         </v-list-item>
+        <v-list-item v-if="authStore.user?.isAdmin">
+          <RouterLink :to="'/statistics'" class="link">Statistics</RouterLink>
+        </v-list-item>
         <v-list-item v-if="!authStore.user?.isAdmin">
           <RouterLink :to="'/user/edit/' + authStore.user.id" class="link">Settings</RouterLink>
         </v-list-item>

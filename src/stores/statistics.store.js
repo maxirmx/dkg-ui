@@ -27,20 +27,29 @@ import { defineStore } from 'pinia'
 import { fetchWrapper } from '@/helpers/fetch.wrapper.js'
 import { apiUrl } from '@/helpers/config.js'
 
-const baseUrl = `${apiUrl}/versions`
+const baseUrl = `${apiUrl}`
 
-export const useVersionsStore = defineStore({
-  id: 'versions',
+export const useStatisticsStore = defineStore({
+  id: 'statistics',
   state: () => ({
-    currentVersion: { }
+    statistics: { },
+    statisticsU: { }
   }),
   actions: {
-    async getCurrent() {
-      this.currentVersion = { loading: true }
+    async getStatistics() {
+      this.statistics = { loading: true }
       try {
-        this.currentVersion = await fetchWrapper.get(`${baseUrl}/current`)
+        this.statistics = await fetchWrapper.get(`${baseUrl}/nodes/statistics`)
       } catch (error) {
-        this.currentVersion = { error }
+        this.statistics = { error }
+      }
+    },
+    async getStatisticsU() {
+      this.statisticsU = { loading: true }
+      try {
+        this.statisticsU = await fetchWrapper.get(`${baseUrl}/nodes/statistics`)
+      } catch (error) {
+        this.statisticsU = { error }
       }
     }
   }

@@ -29,6 +29,9 @@ import { apiUrl } from '@/helpers/config.js'
 
 const baseUrl = `${apiUrl}/nodes`
 
+import { useAlertStore } from '@/stores/alert.store.js'
+const alertStore = useAlertStore()
+
 export const useNodesStore = defineStore({
   id: 'nodes',
   state: () => ({
@@ -56,8 +59,9 @@ export const useNodesStore = defineStore({
         this.nodesF = response.nodesFrame
         this.totalNodes = response.totalNodes
         } catch (error) {
-        this.nodesF = { error }
-      }
+          this.nodesF = [ ]
+          alertStore.error('Fatal error when updating node list: ' + error.message)
+         }
     },
     async getAll() {
       this.nodes = { loading: true }
