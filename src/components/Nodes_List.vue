@@ -152,7 +152,7 @@ function formatRound(roundId) {
         v-model:items-per-page="nodesStore.nodesPerPage"
         items-per-page-text="Nodes per page"
         page-text="{0}-{1} of {2}"
-        :page="nodesStore.nodesPage"
+        :page="nodesStore.page"
         :items-per-page-options="itemsPerPageOptions"
         :headers="headers"
         :items="nodesStore.nodesF"
