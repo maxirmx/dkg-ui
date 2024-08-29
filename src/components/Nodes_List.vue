@@ -53,7 +53,7 @@ const updatePeriodically = async () => {
 
   try {
     await nodesStore.fetchFrame({
-      page: nodesStore.nodesPage,
+      page: nodesStore.nodesPage - 1,
       itemsPerPage: nodesStore.nodesPerPage,
       sortBy: nodesStore.nodesSortBy,
       search: nodesStore.nodesSearch,
@@ -152,7 +152,7 @@ function formatRound(roundId) {
         v-model:items-per-page="nodesStore.nodesPerPage"
         items-per-page-text="Nodes per page"
         page-text="{0}-{1} of {2}"
-        :page="nodesStore.page"
+        v-model:page="nodesStore.nodesPage"
         :items-per-page-options="itemsPerPageOptions"
         :headers="headers"
         :items="nodesStore.nodesF"
