@@ -42,7 +42,7 @@ export const useNodesStore = defineStore({
     totalNodes: 0,
     nodesPerPage: 10,
     nodesSearch: '',
-    nodesSortBy: [ { key: 'id', order: 'desc' } ],
+    nodesSortBy: [  ],
     nodesPage: 1,
   }),
   actions: {
