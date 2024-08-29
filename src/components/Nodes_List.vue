@@ -53,7 +53,7 @@ const updatePeriodically = async () => {
 
   try {
     await nodesStore.fetchFrame({
-      page: authStore.nodesPage,
+      page: nodesStore.nodesPage,
       itemsPerPage: nodesStore.nodesPerPage,
       sortBy: nodesStore.nodesSortBy,
       search: nodesStore.nodesSearch,
