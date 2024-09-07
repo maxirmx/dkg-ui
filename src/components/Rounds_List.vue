@@ -147,13 +147,20 @@ function formatTimeouts(item) {
   return tt
 }
 
+let isOps = false
+
+
 async function newRound(maxNodes, timeout2, timeout3, timeoutR) {
+  if (isUpdating || isOps) {
+    return
+  }
   const roundSettings = {
     maxNodes: maxNodes,
     timeout2: timeout2,
     timeout3: timeout3,
     timeoutR: timeoutR
   }
+  isOps = true
   roundsStore.add(roundSettings)
   .then(() => {
         updateDataGrid()
@@ -161,9 +168,14 @@ async function newRound(maxNodes, timeout2, timeout3, timeoutR) {
       .catch((error) => {
         alertStore.error(error)
       })
+      .finally(() => isOps = false)
 }
 
 async function cancelRound(id) {
+  if (isUpdating || isOps) {
+    return
+  }
+  isOps = true
   roundsStore.cancel(id)
   .then(() => {
         updateDataGrid()
@@ -171,9 +183,14 @@ async function cancelRound(id) {
       .catch((error) => {
         alertStore.error(error)
       })
+      .finally(() => isOps = false)
 }
 
 async function nextRoundStep(id) {
+  if (isUpdating || isOps) {
+    return
+  }
+  isOps = true
   roundsStore.next(id)
   .then(() => {
         updateDataGrid()
@@ -181,12 +198,13 @@ async function nextRoundStep(id) {
       .catch((error) => {
         alertStore.error(error)
       })
+      .finally(() => isOps = false)
 }
 
 let isUpdating = false
 
 const updateDataGrid = async () => {
-  if (isUpdating) {
+  if (isUpdating || isOps) {
     return
   }
 
@@ -257,7 +275,7 @@ function showCancel(item) {
     <hr class="hr" />
 
     <div class="link-crt">
-      <a class="link" @click="newRound(authStore.max_nodes, authStore.timeout2, authStore.timeout3, authStore.timeoutR)">
+      <a class="link" @click="newRound(authStore.max_nodes, authStore.timeout2, authStore.timeout3, authStore.timeoutR)" :disabled ="isUpdating || isOps">
         <font-awesome-icon size="1x" icon="fa-solid fa-plus" class="link" />
         New round
       </a>
@@ -311,7 +329,7 @@ function showCancel(item) {
         </template>
 
         <template v-slot:[`item.actionNext`]="{ item }">
-          <button @click="nextRoundStep(item['id'])" class="anti-btn" v-if="showProceed(item)">
+          <button @click="nextRoundStep(item['id'])" class="anti-btn" v-if="showProceed(item)" :disabled ="isUpdating || isOps">
             <font-awesome-icon size="1x" :icon= "'fa-solid ' + item['nextStatus'].actionIcon" class="anti-btn" />
           </button>
             <v-tooltip v-if="showProceed(item)"
@@ -320,7 +338,7 @@ function showCancel(item) {
         </template>
 
         <template v-slot:[`item.actionCancel`]="{ item }">
-          <button @click="cancelRound(item['id'])" class="anti-btn" v-if="showCancel(item)">
+          <button @click="cancelRound(item['id'])" class="anti-btn" v-if="showCancel(item)" :disabled ="isUpdating || isOps">
             <font-awesome-icon size="1x" :icon= "'fa-solid ' + item['cancelStatus'].actionIcon" class="anti-btn" />
             <v-tooltip v-if="showCancel(item)"
               activator="parent"
