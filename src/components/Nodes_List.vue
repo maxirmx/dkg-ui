@@ -94,7 +94,6 @@ import { useConfirm } from 'vuetify-use-dialog'
 const confirm = useConfirm()
 
 const headers = [
-  { title: 'Id', align: 'center', key: 'id', sortable: true },
   { title: 'Name', align: 'center', key: 'name', sortable: true },
   { title: 'Address', align: 'center', key: 'address', sortable: true },
   { title: 'Round', align: 'center', key: 'roundId', sortable: true },
@@ -159,7 +158,7 @@ function formatRound(roundId) {
         :itemsLength="nodesStore.totalNodes"
         :search="nodesStore.nodesSearch"
         v-model:sort-by="nodesStore.nodesSortBy"
-        item-value="id"
+        item-value="address"
         class="elevation-1"
         @update:options="nodesStore.fetchNodes"
       >

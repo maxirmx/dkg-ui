@@ -51,6 +51,7 @@ const headers = [
   { title: 'Max. nodes', align: 'center', key: 'maxNodes', sortable: false },
   { title: 'Timeouts (s)', align: 'center', key: 'timeouts', sortable: false },
   { title: 'Nodes', align: 'center', key: 'nodeCount', sortable: true },
+  { title: 'Waiting', align: 'center', key: 'nodeCountWaiting', sortable: true },
   { title: 'Running', align: 'center', key: 'nodeCountRunning', sortable: true },
   { title: 'Failed', align: 'center', key: 'nodeCountFailed', sortable: true },
   { title: 'Timed Out', align: 'center', key: 'nodeCountTimedOut', sortable: true },
@@ -104,6 +105,20 @@ function formatResult(result) {
   return formatted;
 }
 
+function formatWaitingData(item) {
+  let str = '0'
+  if (item['isVersatile']) {
+    const tt =
+    item['nodeCountWRegistration'] +
+    item['nodeCountWRoundStart']
+    if (tt > 0)
+      str = tt.toString() + '  [' +
+        item['nodeCountWRegistration'].toString() + '⇒' +
+        item['nodeCountWRoundStart'].toString()  + ']'
+  }
+  return str;
+}
+
 function formatRunningData(item) {
   let str = '0'
   if (item['isVersatile']) {
@@ -114,12 +129,12 @@ function formatRunningData(item) {
     item['nodeCountWStepThree'] +
     item['nodeCountStepThree']
     if (tt > 0)
-      str = tt.toString() + '  [ ' +
-        '' + item['nodeCountStepOne'].toString() + '⇒' +
-        '' + item['nodeCountWStepTwo'].toString() + '⇒' +
-        '' + item['nodeCountStepTwo'].toString() + '⇒' +
-        '' + item['nodeCountWStepThree'].toString() + '⇒' +
-        '' + item['nodeCountStepThree'].toString() + ']'
+      str = tt.toString() + '  [' +
+        item['nodeCountStepOne'].toString() + '⇒' +
+        item['nodeCountWStepTwo'].toString() + '⇒' +
+        item['nodeCountStepTwo'].toString() + '⇒' +
+        item['nodeCountWStepThree'].toString() + '⇒' +
+        item['nodeCountStepThree'].toString() + ']'
   }
   return str;
 }
@@ -128,6 +143,8 @@ function formatLostData(item) {
   let str = '0'
   if (!item['isVersatile']) {
     const tt =
+    item['nodeCountWRegistration'] +
+    item['nodeCountWRoundStart'] +
     item['nodeCountStepOne'] +
     item['nodeCountWStepTwo'] +
     item['nodeCountStepTwo'] +
@@ -314,6 +331,10 @@ function showCancel(item) {
 
         <template v-slot:[`item.result`]="{ item }">
             {{ formatResult(item['result']) }}
+        </template>
+
+        <template v-slot:[`item.nodeCountWaiting`]="{ item }">
+          {{ formatWaitingData(item) }}
         </template>
 
         <template v-slot:[`item.nodeCountRunning`]="{ item }">
